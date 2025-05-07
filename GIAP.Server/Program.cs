@@ -1,6 +1,10 @@
+using GIAP.Server.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddSingleton<IIdentityProviderService, IdentityProviderService>();
+builder.Services.AddSingleton<IFileSystem, FileSystem>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -26,5 +30,8 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapFallbackToFile("/index.html");
+
+var identityProviderService = app.Services.GetRequiredService<IIdentityProviderService>();
+identityProviderService.Initialize();
 
 app.Run();
