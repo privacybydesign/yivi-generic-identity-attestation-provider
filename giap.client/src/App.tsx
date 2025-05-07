@@ -1,56 +1,50 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {useParams} from "react-router"
 import './App.css';
+import './i18n';
 
-interface Forecast {
-    date: string;
-    temperatureC: number;
-    temperatureF: number;
-    summary: string;
+interface IdentityProvider {
+    name: string;
+    slug: string;
 }
 
 function App() {
-    const [forecasts, setForecasts] = useState<Forecast[]>();
+    const [identityProvider, setIdentityProvider] = useState<IdentityProvider>();
+    const {t} = useTranslation();
+    let {slug} = useParams();
 
     useEffect(() => {
-        populateWeatherData();
+        populateIdentityProviderData();
     }, []);
 
-    const contents = forecasts === undefined
-        ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
-        : <table className="table table-striped" aria-labelledby="tableLabel">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Temp. (C)</th>
-                    <th>Temp. (F)</th>
-                    <th>Summary</th>
-                </tr>
-            </thead>
-            <tbody>
-                {forecasts.map(forecast =>
-                    <tr key={forecast.date}>
-                        <td>{forecast.date}</td>
-                        <td>{forecast.temperatureC}</td>
-                        <td>{forecast.temperatureF}</td>
-                        <td>{forecast.summary}</td>
-                    </tr>
-                )}
-            </tbody>
-        </table>;
-
     return (
-        <div>
-            <h1 id="tableLabel">Weather forecast</h1>
-            <p>This component demonstrates fetching data from the server.</p>
-            {contents}
-        </div>
+        identityProvider !== undefined &&
+        <>
+            <form id="container" onSubmit={e => {
+                e.preventDefault()
+            }}>
+                <header>
+                    <h1>{identityProvider.name}</h1>
+                </header>
+                <main id="main-content">
+                    <p>{t("info")}</p>
+                </main>
+                <footer>
+                    <div className="actions">
+                        <div></div>
+                        <button id="submit-button" type="submit">{t("login")}</button>
+                    </div>
+                </footer>
+            </form>
+        </>
     );
 
-    async function populateWeatherData() {
-        const response = await fetch('weatherforecast');
+    async function populateIdentityProviderData() {
+        const response = await fetch(`/api/identity-provider/${slug}`);
         if (response.ok) {
             const data = await response.json();
-            setForecasts(data);
+            setIdentityProvider(data);
         }
     }
 }

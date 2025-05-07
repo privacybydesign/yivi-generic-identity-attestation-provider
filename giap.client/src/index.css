@@ -81,7 +81,7 @@ h1 {
     font-family: 'Alexandria', Verdana, Arial, sans-serif;
 }
 
-#ideal-form {
+#main-content {
     display: block;
     padding: 16px;
     color: #484747;
@@ -208,7 +208,6 @@ footer button {
 }
 
 @media only screen and (max-width: 340px) {
-
     html,
     body,
     footer a,
@@ -216,11 +215,6 @@ footer button {
     input {
         font-size: 14px;
     }
-}
-
-#ideal-bank-element {
-    background-color: #FFFFFF;
-    padding: 1rem;
 }
 
 .details {
