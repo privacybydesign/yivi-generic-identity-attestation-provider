@@ -47,7 +47,7 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            '^/weatherforecast': {
+            '^/api.*': { // regex to proxy any api call
                 target,
                 secure: false
             }
