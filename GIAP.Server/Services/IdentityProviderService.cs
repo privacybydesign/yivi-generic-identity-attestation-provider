@@ -3,9 +3,7 @@ using GIAP.Server.Models;
 
 namespace GIAP.Server.Services;
 
-/**
- * Class is used as a singleton, see Program.cs
- */
+/// Class is used as a singleton, see Program.cs
 public class IdentityProviderService(IFileSystem fileSystem) : IIdentityProviderService
 {
     private List<IdentityProvider> _identityProviders = [];
