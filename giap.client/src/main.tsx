@@ -2,7 +2,7 @@ import {StrictMode, useEffect} from 'react'
 import {createRoot} from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
-import {BrowserRouter, Routes, Route, useParams} from 'react-router';
+import {BrowserRouter, Routes, Route, Navigate, useParams} from 'react-router';
 import {useTranslation} from 'react-i18next';
 
 // Wrapper that sets the language based on the URL
@@ -24,10 +24,19 @@ function LanguageRouter() {
     );
 }
 
+// Redirect /:slug to /:lang/:slug
+function DefaultLanguageRedirect() {
+    const {i18n} = useTranslation();
+    const {slug} = useParams();
+
+    return <Navigate to={`/${i18n.language}/${slug}`} replace/>;
+}
+
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <BrowserRouter>
             <Routes>
+                <Route path="/:slug" element={<DefaultLanguageRedirect/>}/>
                 <Route path=":lang/*" element={<LanguageRouter/>}/>
             </Routes>
         </BrowserRouter>
