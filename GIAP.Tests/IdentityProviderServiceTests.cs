@@ -6,11 +6,9 @@ namespace GIAP.Tests;
 
 public class IdentityProviderServiceTests
 {
-    /**
-     * Given no identity providers file
-     * When the service is initialized,
-     * Then an exception is thrown
-     */
+    /// Given no identity providers file
+    /// When the service is initialized,
+    /// Then an exception is thrown 
     [Fact]
     public void NoIdentityProviderJsonFound()
     {
@@ -29,11 +27,9 @@ public class IdentityProviderServiceTests
             .ShouldBe("Identity providers file not found");
     }
 
-    /**
-     * Given an empty identity providers file
-     * When the service is initialized,
-     * Then an exception is thrown
-     */
+    /// Given an empty identity providers file
+    /// When the service is initialized,
+    /// Then an exception is thrown
     [Fact]
     public void NoIdentityProvidersFound()
     {
@@ -53,11 +49,9 @@ public class IdentityProviderServiceTests
     }
 
 
-    /**
-     * Given a JSON identity providers file with missing keys
-     * When the service is initialized,
-     * Then an exception is thrown
-     */
+    /// Given a JSON identity providers file with missing keys
+    /// When the service is initialized,
+    /// Then an exception is thrown
     [Fact]
     public void IdentityProviderJsonWithMissingKeys()
     {
@@ -90,11 +84,9 @@ public class IdentityProviderServiceTests
             .ShouldBe("Invalid JSON and/or missing keys in identity providers file");
     }
 
-    /**
-     * Given a malformed JSON identity providers file
-     * When the service is initialized,
-     * Then an exception is thrown
-     */
+    /// Given a malformed JSON identity providers file
+    /// When the service is initialized,
+    /// Then an exception is thrown
     [Fact]
     public void MalformedIdentityProviderJson()
     {
@@ -125,11 +117,9 @@ public class IdentityProviderServiceTests
             .ShouldBe("Invalid JSON and/or missing keys in identity providers file");
     }
 
-    /**
-     * Given a valid identity providers file
-     * When the service is initialized,
-     * Then no exception is thrown
-     */
+    /// Given a valid identity providers file
+    /// When the service is initialized,
+    /// Then no exception is thrown
     [Fact]
     public void JsonMeetsRequirements()
     {
