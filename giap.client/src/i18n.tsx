@@ -27,7 +27,7 @@ i18n
             nl: {
                 translation: {
                     login: "Log in om attributen te laden",
-                    info: "Attributen kunnen eenvoudig in de Yivi app geladen worden. Hiervoor dient u in te loggen in via de knop hieronder en eventueel toestemming te geven. We gebruiken deze gegevens alleen tijdens het laden van de attributen in de app.",
+                    info: "Attributen kunnen eenvoudig in de Yivi app geladen worden. Hiervoor dient u in te loggen via de knop hieronder en eventueel toestemming te geven. We gebruiken deze gegevens alleen tijdens het laden van de attributen in de app.",
                     backendError: "Er is iets misgegaan. Probeer het opnieuw.",
                 }
             }
