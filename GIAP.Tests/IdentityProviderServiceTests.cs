@@ -6,9 +6,11 @@ namespace GIAP.Tests;
 
 public class IdentityProviderServiceTests
 {
+    /// <summary>
     /// Given no identity providers file
     /// When the service is initialized,
     /// Then an exception is thrown 
+    /// </summary>
     [Fact]
     public void NoIdentityProviderJsonFound()
     {
@@ -27,9 +29,11 @@ public class IdentityProviderServiceTests
             .ShouldBe("Identity providers file not found");
     }
 
+    /// <summary>
     /// Given an empty identity providers file
     /// When the service is initialized,
     /// Then an exception is thrown
+    /// </summary>
     [Fact]
     public void NoIdentityProvidersFound()
     {
@@ -49,9 +53,11 @@ public class IdentityProviderServiceTests
     }
 
 
+    /// <summary>
     /// Given a JSON identity providers file with missing keys
     /// When the service is initialized,
     /// Then an exception is thrown
+    /// </summary>
     [Fact]
     public void IdentityProviderJsonWithMissingKeys()
     {
@@ -84,9 +90,11 @@ public class IdentityProviderServiceTests
             .ShouldBe("Invalid JSON and/or missing keys in identity providers file");
     }
 
+    /// <summary>
     /// Given a malformed JSON identity providers file
     /// When the service is initialized,
     /// Then an exception is thrown
+    /// </summary>
     [Fact]
     public void MalformedIdentityProviderJson()
     {
@@ -117,9 +125,11 @@ public class IdentityProviderServiceTests
             .ShouldBe("Invalid JSON and/or missing keys in identity providers file");
     }
 
+    /// <summary>
     /// Given a valid identity providers file
     /// When the service is initialized,
     /// Then no exception is thrown
+    /// </summary>
     [Fact]
     public void JsonMeetsRequirements()
     {
