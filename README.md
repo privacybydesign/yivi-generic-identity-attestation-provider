@@ -51,7 +51,7 @@ Navigate to the backend directory:
 cd GIAP.Server
 ```
 
-Run the backend server (dotnet watch will automatically get any NuGet dependencies):
+Run the backend server (`dotnet watch` will automatically get any NuGet dependencies):
 
 ```
 dotnet watch
@@ -68,25 +68,19 @@ cd GIAP.Tests
 Run the tests:
 
 ```
-dotnet run
+dotnet test
 ```
 
 ## Build
 
-Navigate to the backend server directory:
-
-```
-cd GIAP.Server
-```
-
 Build the image:
 
 ```
-docker build -t giap-image -f Dockerfile
+docker build -t giap-image -f Dockerfile .
 ```
 
-Run the container:
+Run the container and remove it when it stops:
 
 ```
-docker run -d -p 62858:8080 --name giap-container giap-image
+docker run --rm -p 62858:8080 --name giap-container giap-image
 ```
