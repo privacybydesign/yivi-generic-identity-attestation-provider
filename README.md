@@ -82,7 +82,7 @@ cd GIAP.Server
 Build the image:
 
 ```
-docker build -t giap-image -f Dockerfile ..
+docker build -t giap-image -f Dockerfile
 ```
 
 Run the container:
