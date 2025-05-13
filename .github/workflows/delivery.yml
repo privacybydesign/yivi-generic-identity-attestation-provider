@@ -53,7 +53,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./GIAP.Server/Dockerfile
           load: true
           tags: local/yivi-generic-identity-attestation-provider:scan
           cache-from: type=gha
