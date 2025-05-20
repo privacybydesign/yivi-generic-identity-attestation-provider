@@ -1,6 +1,8 @@
 # Setup
 
-Add a `identity-providers.json` to `./GIAP.Server/Configuration/`.
+## Add external identity providers
+
+Add a `identity-providers.json` to `./GIAP.Server/Configuration/`.  
 Example (from `./GIAP.Server/Configuration/Examples`):
 
 ```json
@@ -11,6 +13,13 @@ Example (from `./GIAP.Server/Configuration/Examples`):
   }
 ]
 
+```
+
+## Add .env
+
+Example from `.env.example`: 
+```dotenv
+IRMA_SERVER_API_TOKEN=
 ```
 
 # Development
