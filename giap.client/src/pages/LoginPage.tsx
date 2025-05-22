@@ -1,15 +1,13 @@
-import {useEffect, useState} from 'react';
-import {useTranslation} from 'react-i18next';
-import {useParams} from "react-router"
-import './App.css';
-import './i18n';
+import {useEffect, useState} from "react";
+import {useTranslation} from "react-i18next";
+import {useParams} from "react-router";
 
 interface IdentityProvider {
     name: string;
     slug: string;
 }
 
-function App() {
+function LoginPage() {
     const [identityProvider, setIdentityProvider] = useState<IdentityProvider>();
     const [error, setError] = useState<boolean>(false);
     const {t} = useTranslation();
@@ -66,4 +64,4 @@ function App() {
     }
 }
 
-export default App;
+export default LoginPage;
