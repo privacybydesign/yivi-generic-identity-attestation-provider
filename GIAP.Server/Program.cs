@@ -62,26 +62,31 @@ app.Use(async (context, next) =>
         await next();
         return;
     }
-    
-    var logger = app.Logger; // Use the app's logger
-    
-    logger.LogInformation("=== REQUEST DEBUG START ===");
-    logger.LogInformation("REQUEST RECEIVED: {Method} {Path}", context.Request.Method, context.Request.Path);
-    logger.LogInformation("=== REQUEST DEBUG END ===");
-    
-    logger.LogInformation("=== FORWARDED HEADERS DEBUG ===");
-    logger.LogInformation("Request Scheme: {Scheme}", context.Request.Scheme);
-    logger.LogInformation("Request Host: {Host}", context.Request.Host);
-    logger.LogInformation("Request IsHttps: {IsHttps}", context.Request.IsHttps);
-    logger.LogInformation("Remote IP: {RemoteIP}", context.Connection.RemoteIpAddress);
-    
-    logger.LogInformation("=== HEADERS START ===");
-    foreach (var header in context.Request.Headers)
+
+    // todo remove temp logging
+    // 1. Scope for grouping + indent
+    using var scope = app.Logger.BeginScope(
+        "Request {Method} {Path}",
+        context.Request.Method,
+        context.Request.Path);
+
+    // 2. Combined core info
+    app.Logger.LogInformation(
+        "Scheme={Scheme}  Host={Host}  IsHttps={IsHttps}  RemoteIP={RemoteIP}",
+        context.Request.Scheme,
+        context.Request.Host,
+        context.Request.IsHttps,
+        context.Connection.RemoteIpAddress);
+
+    // 3. Only log forwarded headers, structured
+    var forwarded = context.Request.Headers
+        .Where(h => h.Key.StartsWith("X-Forwarded-", StringComparison.OrdinalIgnoreCase))
+        .ToDictionary(h => h.Key, h => h.Value.ToString());
+    if (forwarded.Any())
     {
-        logger.LogInformation("Header: {Key} = {Value}", header.Key, header.Value);
+        app.Logger.LogInformation("ForwardedHeaders={@Forwarded}", forwarded);
     }
-    logger.LogInformation("=== HEADERS END ===");
-    
+
     await next();
 });
 
