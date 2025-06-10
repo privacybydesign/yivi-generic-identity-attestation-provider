@@ -77,8 +77,8 @@ jobs:
           sarif_file: ${{ steps.scan.outputs.sarif }}
 
       - name: Push image to GitHub Container Registry
-        uses: docker/build-push-action@v5
-        if: ${{ github.event_name == 'release' || github.event_name == 'push' }}
+        uses: docker/build-push-action@v6
+        if: ${{ github.event_name == 'release' || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
         with:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
