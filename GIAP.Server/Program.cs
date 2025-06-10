@@ -57,18 +57,24 @@ app.UseForwardedHeaders(); // todo temp testing
 // todo temp fixing
 app.Use(async (context, next) =>
 {
-    Console.WriteLine("=== FORWARDED HEADERS DEBUG ===");
-    Console.WriteLine($"Request Scheme: {context.Request.Scheme}");
-    Console.WriteLine($"Request Host: {context.Request.Host}");
-    Console.WriteLine($"Request IsHttps: {context.Request.IsHttps}");
-    Console.WriteLine($"Remote IP: {context.Connection.RemoteIpAddress}");
+    var logger = app.Logger; // Use the app's logger
     
-    Console.WriteLine("=== ALL HEADERS ===");
+    logger.LogInformation("=== REQUEST DEBUG START ===");
+    logger.LogInformation("REQUEST RECEIVED: {Method} {Path}", context.Request.Method, context.Request.Path);
+    logger.LogInformation("=== REQUEST DEBUG END ===");
+    
+    logger.LogInformation("=== FORWARDED HEADERS DEBUG ===");
+    logger.LogInformation("Request Scheme: {Scheme}", context.Request.Scheme);
+    logger.LogInformation("Request Host: {Host}", context.Request.Host);
+    logger.LogInformation("Request IsHttps: {IsHttps}", context.Request.IsHttps);
+    logger.LogInformation("Remote IP: {RemoteIP}", context.Connection.RemoteIpAddress);
+    
+    logger.LogInformation("=== HEADERS START ===");
     foreach (var header in context.Request.Headers)
     {
-        Console.WriteLine($"  {header.Key}: {header.Value}");
+        logger.LogInformation("Header: {Key} = {Value}", header.Key, header.Value);
     }
-    Console.WriteLine("=== END DEBUG ===");
+    logger.LogInformation("=== HEADERS END ===");
     
     await next();
 });
