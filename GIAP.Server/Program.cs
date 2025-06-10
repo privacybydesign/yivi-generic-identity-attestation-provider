@@ -54,6 +54,25 @@ var app = builder.Build();
 
 app.UseForwardedHeaders(); // todo temp testing
 
+// todo temp fixing
+app.Use(async (context, next) =>
+{
+    Console.WriteLine("=== FORWARDED HEADERS DEBUG ===");
+    Console.WriteLine($"Request Scheme: {context.Request.Scheme}");
+    Console.WriteLine($"Request Host: {context.Request.Host}");
+    Console.WriteLine($"Request IsHttps: {context.Request.IsHttps}");
+    Console.WriteLine($"Remote IP: {context.Connection.RemoteIpAddress}");
+    
+    Console.WriteLine("=== ALL HEADERS ===");
+    foreach (var header in context.Request.Headers)
+    {
+        Console.WriteLine($"  {header.Key}: {header.Value}");
+    }
+    Console.WriteLine("=== END DEBUG ===");
+    
+    await next();
+});
+
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
