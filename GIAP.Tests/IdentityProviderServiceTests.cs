@@ -48,7 +48,7 @@ public class IdentityProviderServiceTests
         fileSystem.ReadAllText(expectedPath).Returns("[]");
 
         var service = new IdentityProviderService(fileSystem);
-        Should.Throw<InvalidOperationException>(() => service.Initialize()).Message
+        Should.Throw<InvalidDataException>(() => service.Initialize()).Message
             .ShouldBe("No identity providers found");
     }
 

@@ -8,7 +8,7 @@ namespace GIAP.Server.Services;
 /// Class is used as a singleton, see Program.cs.
 /// </summary>
 /// <param name="fileSystem">File system used to read the identity providers file.</param>
-public class IdentityProviderService(IFileSystem fileSystem) : IIdentityProviderService
+public class IdentityProviderService(IFileSystem fileSystem)
 {
     private List<IdentityProvider> _identityProviders = [];
 
@@ -21,7 +21,6 @@ public class IdentityProviderService(IFileSystem fileSystem) : IIdentityProvider
     /// Initializes identity providers from configuration.
     /// </summary>
     /// <exception cref="FileNotFoundException">Thrown when no identity providers file is found.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when zero identity providers are found in the file.</exception>
     /// <exception cref="InvalidDataException">Thrown when the JSON is invalid or has missing keys.</exception>
     public void Initialize()
     {
@@ -41,6 +40,20 @@ public class IdentityProviderService(IFileSystem fileSystem) : IIdentityProvider
 
             if (_identityProviders.Count == 0)
             {
+                throw new InvalidDataException("No identity providers found");
+            }
+
+            var slugs = new Dictionary<string, bool>();
+            foreach (var identityProvider in _identityProviders)
+            {
+                // If a slug is already added to the dictionary, it means a duplicate exists in the idp config file
+                if (slugs.ContainsKey(identityProvider.Slug))
+                {
+                    throw new InvalidDataException(
+                        $"Duplicate slug found in identity-providers.json: {identityProvider.Slug}");
+                }
+
+                slugs[identityProvider.Slug] = true;
                 throw new InvalidOperationException("No identity providers found");
             }
         }
