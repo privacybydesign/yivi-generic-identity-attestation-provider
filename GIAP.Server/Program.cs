@@ -57,6 +57,12 @@ app.UseForwardedHeaders(); // todo temp testing
 // todo temp fixing
 app.Use(async (context, next) =>
 {
+    if (context.Request.Path == "/health")
+    {
+        await next();
+        return;
+    }
+    
     var logger = app.Logger; // Use the app's logger
     
     logger.LogInformation("=== REQUEST DEBUG START ===");
