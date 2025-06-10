@@ -69,4 +69,10 @@ public class IdentityProviderService(IFileSystem fileSystem)
     /// <param name="slug">A web url slug, for example, "idp-slug".</param>
     /// <returns>The identity provider, if none found, it returns null.</returns>
     public IdentityProvider? GetBySlug(string slug) => _identityProviders.FirstOrDefault(idp => idp.Slug == slug);
+
+    /// <summary>
+    /// Get all identity providers.
+    /// </summary>
+    /// <returns>A list of all the identity providers.</returns>
+    public List<IdentityProvider> GetAll() => _identityProviders;
 }
