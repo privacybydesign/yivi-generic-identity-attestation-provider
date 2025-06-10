@@ -7,10 +7,10 @@ interface IdentityProvider {
     slug: string;
 }
 
-function LoginPage() {
+function Login() {
     const [identityProvider, setIdentityProvider] = useState<IdentityProvider>();
     const [error, setError] = useState<boolean>(false);
-    const {t} = useTranslation();
+    const {t, i18n} = useTranslation();
     let {slug} = useParams();
 
     useEffect(() => {
@@ -35,12 +35,17 @@ function LoginPage() {
                     <h1>{identityProvider.name}</h1>
                 </header>
                 <main id="main-content">
-                    <p>{t("info")}</p>
+                    <p>{t("loginInfo")}</p>
                 </main>
                 <footer>
                     <div className="actions">
-                        <div></div>
-                        <button id="submit-button" type="submit">{t("login")}</button>
+                        <button id="submit-button"
+                                onClick={
+                                    () => location.href = `/api/identity-provider/${slug}/ui-login/${i18n.language}`
+                                }
+                                type="button">
+                            {t("loginButton")}
+                        </button>
                     </div>
                 </footer>
             </form>
@@ -64,4 +69,4 @@ function LoginPage() {
     }
 }
 
-export default LoginPage;
+export default Login;
