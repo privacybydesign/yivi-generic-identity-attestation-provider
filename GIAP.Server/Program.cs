@@ -1,6 +1,7 @@
 using GIAP.Server.Configuration;
 using GIAP.Server.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,7 +39,20 @@ builder.Services
     .AddCookie()
     .AddIdentityProviders();
 
+// todo temp testing
+//https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-8.0&preserve-view=true#forwarded-headers-middleware-order
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+
+    //https://stackoverflow.com/questions/43749236/net-core-x-forwarded-proto-not-working
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
 var app = builder.Build();
+
+app.UseForwardedHeaders(); // todo temp testing
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
