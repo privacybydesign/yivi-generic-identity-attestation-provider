@@ -70,7 +70,7 @@ public class IdentityProviderServiceTests
 
         fileSystem.Exists(expectedPath).Returns(true);
 
-        // JSON doesn't include the required name key from the IdentityProvider model
+        // JSON doesn't include all the keys from the IdentityProvider model
         const string json = """
                             [
                                 {
@@ -144,14 +144,40 @@ public class IdentityProviderServiceTests
 
         const string json = """
                             [
-                                {
-                                  "name": "Example Identity Provider 1",
-                                  "slug": "example-1"
-                                },
-                                {
-                                  "name": "Example Identity Provider 2",
-                                  "slug": "example-2"
+                              {
+                                "name": "Example Identity Provider 1",
+                                "slug": "example-1",
+                                "openIdWellKnownUrl": "https://example.local/.well-known/openid-configuration",
+                                "clientId": "123-456-789",
+                                "clientSecret": "ABC-123-XYZ",
+                                "callbackPath": "/api/callback-signin-example-1",
+                                "apiUrls": [
+                                  "https://api.example.local/me?fields=id,given_name,family_name,companyName"
+                                ],
+                                "schemePath": "pbdf/Issues/example1/description.xml",
+                                "issuanceValidityInMonths": 6,
+                                "attributeMapping": {
+                                  "id": "id",
+                                  "given_name": "givenName",
+                                  "family_name": "surname",
+                                  "companyName": "companyName"
                                 }
+                              },
+                              {
+                                "name": "Example Identity Provider 2",
+                                "slug": "example-2",
+                                "openIdWellKnownUrl": "https://example.local/.well-known/openid-configuration",
+                                "clientId": "987-654-321",
+                                "clientSecret": "ZYX-321-CBA",
+                                "callbackPath": "/api/callback-signin-example-2",
+                                "schemePath": "pbdf/Issues/example2/description.xml",
+                                "issuanceValidityInMonths": 6,
+                                "attributeMapping": {
+                                  "http://example.local/claims/id": "id",
+                                  "given_name": "givenName",
+                                  "family_name": "surname"
+                                }
+                              }
                             ]
                             """;
 
