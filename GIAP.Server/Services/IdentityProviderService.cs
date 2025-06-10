@@ -54,7 +54,6 @@ public class IdentityProviderService(IFileSystem fileSystem)
                 }
 
                 slugs[identityProvider.Slug] = true;
-                throw new InvalidOperationException("No identity providers found");
             }
         }
         catch (JsonException e)
