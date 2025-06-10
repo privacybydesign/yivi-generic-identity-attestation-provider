@@ -54,6 +54,8 @@ var app = builder.Build();
 
 app.UseForwardedHeaders(); // todo temp testing
 
+app.UseAuthentication();
+
 // todo temp fixing
 app.Use(async (context, next) =>
 {
