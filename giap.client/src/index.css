@@ -1,3 +1,11 @@
+/* todo temp replace this with proper css */
+#yivi-web-form {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 /* CSS from IBAN issuer: https://github.com/privacybydesign/yivi-iban-issuer/tree/main/react-cra */
 
 @font-face {
