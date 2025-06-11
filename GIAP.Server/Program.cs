@@ -42,7 +42,7 @@ builder.Services
     {
         options.CookieManager = new ChunkingCookieManager
         {
-            ChunkSize = 1000
+            ChunkSize = 3750
         };
     })
     .AddIdentityProviders();
