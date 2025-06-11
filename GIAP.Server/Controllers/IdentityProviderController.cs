@@ -26,7 +26,7 @@ public class IdentityProviderController(
     IApiClient apiClient,
     ISchemeCredentialClient schemeCredentialClient,
     ICredentialAttributeService credentialAttributeService,
-    IrmaServerClient irmaServerClient
+    IIrmaServerClient irmaServerClient
 ) : ControllerBase
 {
     /// <summary>

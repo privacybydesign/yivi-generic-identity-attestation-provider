@@ -4,6 +4,7 @@ using GIAP.Server.Configuration;
 using GIAP.Server.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.HttpOverrides;
+
 // todo temp fixing
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,7 +27,7 @@ builder.Services.AddSingleton<IdentityProviderService>(serviceProvider =>
 
 builder.Services.AddHttpClient<IApiClient, ApiClient>();
 builder.Services.AddHttpClient<ISchemeCredentialClient, SchemeCredentialClient>();
-builder.Services.AddHttpClient<IrmaServerClient>();
+builder.Services.AddHttpClient<IIrmaServerClient, IrmaServerClient>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
