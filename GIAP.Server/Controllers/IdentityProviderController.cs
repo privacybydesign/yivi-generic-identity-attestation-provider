@@ -22,7 +22,7 @@ namespace GIAP.Server.Controllers;
 [ApiController]
 public class IdentityProviderController(
     IdentityProviderService identityProviderService,
-    ApiClient apiClient,
+    IApiClient apiClient,
     SchemeCredentialClient schemeCredentialClient,
     ICredentialAttributeService credentialAttributeService,
     IrmaServerClient irmaServerClient
@@ -57,7 +57,7 @@ public class IdentityProviderController(
     {
         var (failureResponse, idpAuthData) = await IdentityProviderAuth(HttpContext, slug);
         if (failureResponse != null || idpAuthData == null) return failureResponse!;
-     
+
         // todo debugging
         var baseUrl = $"{Request.Scheme}://{Request.Host}";
         return Redirect($"{baseUrl}/{language}/{slug}/load-attributes");

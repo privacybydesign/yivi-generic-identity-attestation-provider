@@ -22,7 +22,7 @@ builder.Services.AddSingleton<IdentityProviderService>(serviceProvider =>
     return identityProviderService;
 });
 
-builder.Services.AddHttpClient<ApiClient>();
+builder.Services.AddHttpClient<IApiClient, ApiClient>();
 builder.Services.AddHttpClient<SchemeCredentialClient>();
 builder.Services.AddHttpClient<IrmaServerClient>();
 

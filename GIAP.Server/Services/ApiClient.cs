@@ -3,18 +3,10 @@ using System.Text.Json;
 
 namespace GIAP.Server.Services;
 
-/// <summary>
-/// The ApiClient is used to get data from an API using the access token from the identity provider.
-/// </summary>
-/// <param name="httpClient">The HTTP client used to call the API.</param>
-public class ApiClient(HttpClient httpClient)
+/// <inheritdoc/>
+public class ApiClient(HttpClient httpClient) : IApiClient
 {
-    /// <summary>
-    /// Get the combined API data from multiple URLs.
-    /// </summary>
-    /// <param name="accessToken">The access token from the identity provider</param>
-    /// <param name="urls">The GET urls to get data from the API</param>
-    /// <returns>The combined API data from multiple URLs.</returns>
+    /// <inheritdoc/>
     public async Task<Dictionary<string, string>> Get(string accessToken, List<string> urls)
     {
         var combinedApiData = new Dictionary<string, string>();
@@ -31,12 +23,7 @@ public class ApiClient(HttpClient httpClient)
         return combinedApiData;
     }
 
-    /// <summary>
-    /// Get attributes from an API using the access token from the IdP and API url defined within the configuration.
-    /// </summary>
-    /// <param name="accessToken">The access token from the identity provider</param>
-    /// <param name="url">The GET url to get data from the API</param>
-    /// <returns>Returns the data from the API</returns>
+    /// <inheritdoc/>
     public async Task<Dictionary<string, string>> Get(string accessToken, string url)
     {
         httpClient.DefaultRequestHeaders.Clear();
