@@ -1,12 +1,14 @@
-using GIAP.Server; // todo temp fixing
+using DotNetEnv;
+using GIAP.Server;
 using GIAP.Server.Configuration;
 using GIAP.Server.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.HttpOverrides;
+// todo temp fixing
 
 var builder = WebApplication.CreateBuilder(args);
 
-DotNetEnv.Env.Load();
+Env.Load();
 
 // Add services to the container.
 builder.Services.AddTransient<IAttributeMapperService, AttributeMapperService>();
@@ -23,7 +25,7 @@ builder.Services.AddSingleton<IdentityProviderService>(serviceProvider =>
 });
 
 builder.Services.AddHttpClient<IApiClient, ApiClient>();
-builder.Services.AddHttpClient<SchemeCredentialClient>();
+builder.Services.AddHttpClient<ISchemeCredentialClient, SchemeCredentialClient>();
 builder.Services.AddHttpClient<IrmaServerClient>();
 
 builder.Services.AddControllers();

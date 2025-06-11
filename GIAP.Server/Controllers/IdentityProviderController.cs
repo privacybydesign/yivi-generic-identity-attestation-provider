@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Text.Json;
+using DotNetEnv;
 using GIAP.Server.Models;
 using GIAP.Server.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -23,7 +24,7 @@ namespace GIAP.Server.Controllers;
 public class IdentityProviderController(
     IdentityProviderService identityProviderService,
     IApiClient apiClient,
-    SchemeCredentialClient schemeCredentialClient,
+    ISchemeCredentialClient schemeCredentialClient,
     ICredentialAttributeService credentialAttributeService,
     IrmaServerClient irmaServerClient
 ) : ControllerBase
@@ -77,8 +78,8 @@ public class IdentityProviderController(
         if (failureResponse != null || idpAuthData == null) return failureResponse!;
 
         // Get scheme attributes
-        var schemeUrl = DotNetEnv.Env.GetString("SCHEME_BASE_URL");
-        var scheme = DotNetEnv.Env.GetString("SCHEME_NAME");
+        var schemeUrl = Env.GetString("SCHEME_BASE_URL");
+        var scheme = Env.GetString("SCHEME_NAME");
         var fullSchemeUrl = $"{schemeUrl}/{scheme}/{idpAuthData.IdentityProvider.SchemePath}";
         var schemeAttributes = await schemeCredentialClient.GetAttributes(fullSchemeUrl, language);
 
@@ -118,9 +119,9 @@ public class IdentityProviderController(
         var (failureResponse, idpAuthData) = await IdentityProviderAuth(HttpContext, slug);
         if (failureResponse != null || idpAuthData == null) return failureResponse!;
 
-        var irmaServerBaseUrl = DotNetEnv.Env.GetString("IRMA_SERVER_BASE_URL");
-        var irmaServerApiToken = DotNetEnv.Env.GetString("IRMA_SERVER_API_TOKEN");
-        var schemeName = DotNetEnv.Env.GetString("SCHEME_NAME");
+        var irmaServerBaseUrl = Env.GetString("IRMA_SERVER_BASE_URL");
+        var irmaServerApiToken = Env.GetString("IRMA_SERVER_API_TOKEN");
+        var schemeName = Env.GetString("SCHEME_NAME");
 
         var apiData = new Dictionary<string, string>();
         if (idpAuthData.IdentityProvider.ApiUrls != null)
