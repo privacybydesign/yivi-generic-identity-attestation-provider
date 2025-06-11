@@ -16,7 +16,7 @@ builder.Services.AddTransient<IAttributeMapperService, AttributeMapperService>()
 builder.Services.AddTransient<ICredentialAttributeService, CredentialAttributeService>();
 
 builder.Services.AddSingleton<IFileSystem, FileSystem>();
-builder.Services.AddSingleton<IdentityProviderService>(serviceProvider =>
+builder.Services.AddSingleton<IIdentityProviderService, IdentityProviderService>(serviceProvider =>
 {
     var fileSystem = serviceProvider.GetRequiredService<IFileSystem>();
     var identityProviderService = new IdentityProviderService(fileSystem);

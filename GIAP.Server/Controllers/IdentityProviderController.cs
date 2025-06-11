@@ -22,7 +22,7 @@ namespace GIAP.Server.Controllers;
 /// <param name="irmaServerClient">To issue the credential.</param>
 [ApiController]
 public class IdentityProviderController(
-    IdentityProviderService identityProviderService,
+    IIdentityProviderService identityProviderService,
     IApiClient apiClient,
     ISchemeCredentialClient schemeCredentialClient,
     ICredentialAttributeService credentialAttributeService,
