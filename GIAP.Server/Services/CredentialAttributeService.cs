@@ -4,7 +4,7 @@
 /// Service for getting credential attributes for issuance and display.
 /// </summary>
 /// <param name="attributeMapperService">The attribute mapper.</param>
-public class CredentialAttributeService(AttributeMapperService attributeMapperService) : ICredentialAttributeService
+public class CredentialAttributeService(IAttributeMapperService attributeMapperService) : ICredentialAttributeService
 {
     /// <inheritdoc/>
     public Dictionary<string, string> GetCredentialAttributesForIssuance(

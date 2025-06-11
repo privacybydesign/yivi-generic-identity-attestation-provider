@@ -24,7 +24,7 @@ public class IdentityProviderController(
     IdentityProviderService identityProviderService,
     ApiClient apiClient,
     SchemeCredentialClient schemeCredentialClient,
-    CredentialAttributeService credentialAttributeService,
+    ICredentialAttributeService credentialAttributeService,
     IrmaServerClient irmaServerClient
 ) : ControllerBase
 {

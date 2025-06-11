@@ -9,8 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 DotNetEnv.Env.Load();
 
 // Add services to the container.
-builder.Services.AddTransient<AttributeMapperService>();
-builder.Services.AddTransient<CredentialAttributeService>();
+builder.Services.AddTransient<IAttributeMapperService, AttributeMapperService>();
+builder.Services.AddTransient<ICredentialAttributeService, CredentialAttributeService>();
 
 builder.Services.AddSingleton<IFileSystem, FileSystem>();
 builder.Services.AddSingleton<IdentityProviderService>(serviceProvider =>
