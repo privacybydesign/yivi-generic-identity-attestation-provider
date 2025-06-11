@@ -53,44 +53,7 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 var app = builder.Build();
 
 app.UseForwardedHeaders(); // todo temp testing
-
-app.UseAuthentication();
-
-// todo temp fixing
-app.Use(async (context, next) =>
-{
-    if (context.Request.Path == "/health")
-    {
-        await next();
-        return;
-    }
-
-    // todo remove temp logging
-    // 1. Scope for grouping + indent
-    using var scope = app.Logger.BeginScope(
-        "Request {Method} {Path}",
-        context.Request.Method,
-        context.Request.Path);
-
-    // 2. Combined core info
-    app.Logger.LogInformation(
-        "Scheme={Scheme}  Host={Host}  IsHttps={IsHttps}  RemoteIP={RemoteIP}",
-        context.Request.Scheme,
-        context.Request.Host,
-        context.Request.IsHttps,
-        context.Connection.RemoteIpAddress);
-
-    // 3. Only log forwarded headers, structured
-    var forwarded = context.Request.Headers
-        .Where(h => h.Key.StartsWith("X-Forwarded-", StringComparison.OrdinalIgnoreCase))
-        .ToDictionary(h => h.Key, h => h.Value.ToString());
-    if (forwarded.Any())
-    {
-        app.Logger.LogInformation("ForwardedHeaders={@Forwarded}", forwarded);
-    }
-
-    await next();
-});
+app.UseAuthentication(); // todo temp fixing
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
