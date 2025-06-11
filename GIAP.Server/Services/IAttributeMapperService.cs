@@ -1,5 +1,8 @@
 ﻿namespace GIAP.Server.Services;
 
+/// <summary>
+/// This service is responsible for mapping and filtering attributes for credentials.
+/// </summary>
 public interface IAttributeMapperService
 {
     /// <summary>

@@ -1,9 +1,6 @@
 ﻿namespace GIAP.Server.Services;
 
-/// <summary>
-/// Service for getting credential attributes for issuance and display.
-/// </summary>
-/// <param name="attributeMapperService">The attribute mapper.</param>
+/// <inheritdoc/>
 public class CredentialAttributeService(IAttributeMapperService attributeMapperService) : ICredentialAttributeService
 {
     /// <inheritdoc/>

@@ -1,8 +1,6 @@
 ﻿namespace GIAP.Server.Services;
 
-/// <summary>
-/// This uses the System.IO.File class to interact with files.
-/// </summary>
+/// <inheritdoc/>
 public class FileSystem : IFileSystem
 {
     /// <inheritdoc/>

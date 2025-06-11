@@ -1,5 +1,8 @@
 ﻿namespace GIAP.Server.Services;
 
+/// <summary>
+/// Service for getting credential attributes for issuance and display.
+/// </summary>
 public interface ICredentialAttributeService
 {
     /// <summary>
