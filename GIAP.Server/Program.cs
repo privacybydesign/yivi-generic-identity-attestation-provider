@@ -1,3 +1,4 @@
+using GIAP.Server; // todo temp fixing
 using GIAP.Server.Configuration;
 using GIAP.Server.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -53,6 +54,7 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 var app = builder.Build();
 
 app.UseForwardedHeaders(); // todo temp testing
+app.UseMiddleware<HeaderSizeLoggingMiddleware>(); // todo temp fixing
 app.UseAuthentication(); // todo temp fixing
 
 app.UseDefaultFiles();
