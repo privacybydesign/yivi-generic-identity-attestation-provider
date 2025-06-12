@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
-import {useParams, useNavigate} from "react-router";
+import {useNavigate, useParams} from "react-router";
 
 const yivi = require('@privacybydesign/yivi-frontend'); // this only works with CommonJS, so we use 'require'
 
@@ -30,7 +30,7 @@ function Issuance() {
             // Back-end options
             session: {
                 // Point this to your controller:
-                url: `http://localhost:62858/api/identity-provider/${slug}/irma-endpoint`,
+                url: `https://giap.staging.yivi.app/api/identity-provider/${slug}/irma-endpoint`,
 
                 start: {
                     url: (o: { url: string; }) => `${o.url}/start`,

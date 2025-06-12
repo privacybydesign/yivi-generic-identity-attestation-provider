@@ -29,7 +29,7 @@ public static class IdentityProvidersExtension
                 configure.ClientSecret = identityProvider.ClientSecret;
                 configure.CallbackPath = identityProvider.CallbackPath;
                 configure.ResponseType = OpenIdConnectResponseType.Code;
-                // configure.SaveTokens = true; // necessary to get the access token for optional API calls
+                configure.SaveTokens = true; // necessary to get the access token for optional API calls
                 configure.GetClaimsFromUserInfoEndpoint = true; // necessary to get the user info from the IdP
             });
         }

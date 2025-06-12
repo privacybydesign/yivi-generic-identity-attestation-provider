@@ -1,9 +1,12 @@
-﻿namespace GIAP.Server;
+﻿using System.Text;
+
+namespace GIAP.Server;
+
 // todo temp fixing
 public class HeaderSizeLoggingMiddleware
 {
-    private readonly RequestDelegate _next;
     private readonly ILogger<HeaderSizeLoggingMiddleware> _logger;
+    private readonly RequestDelegate _next;
 
     public HeaderSizeLoggingMiddleware(RequestDelegate next, ILogger<HeaderSizeLoggingMiddleware> logger)
     {
@@ -15,7 +18,7 @@ public class HeaderSizeLoggingMiddleware
     {
         // Capture the original response stream
         var originalResponseStream = context.Response.Body;
-        
+
         using var responseStream = new MemoryStream();
         context.Response.Body = responseStream;
 
@@ -29,7 +32,7 @@ public class HeaderSizeLoggingMiddleware
         foreach (var header in context.Response.Headers)
         {
             var headerString = $"{header.Key}: {string.Join(", ", header.Value)}";
-            var headerSize = System.Text.Encoding.UTF8.GetByteCount(headerString);
+            var headerSize = Encoding.UTF8.GetByteCount(headerString);
             totalHeaderSize += headerSize;
 
             if (headerSize > largestHeaderSize)
@@ -41,17 +44,18 @@ public class HeaderSizeLoggingMiddleware
             // Log individual large headers (over 1KB)
             if (headerSize > 1024)
             {
-                _logger.LogWarning("Large header detected: {HeaderName} = {HeaderSize} bytes", 
+                _logger.LogWarning("Large header detected: {HeaderName} = {HeaderSize} bytes",
                     header.Key, headerSize);
             }
         }
 
         // Log total header size for OIDC callback requests specifically
-        if (context.Request.Path.StartsWithSegments("/api/callback-signin-msentraid"))
+        if (context.Request.Path.StartsWithSegments("/api/callback-signin-msentraid") ||
+            context.Request.Path.StartsWithSegments("/api/callback-signin-caesar"))
         {
             _logger.LogWarning("OIDC Callback - Total response header size: {TotalSize} bytes, " +
-                              "Largest header: {LargestHeader} ({LargestSize} bytes), " +
-                              "Status: {StatusCode}", 
+                               "Largest header: {LargestHeader} ({LargestSize} bytes), " +
+                               "Status: {StatusCode}",
                 totalHeaderSize, largestHeader, largestHeaderSize, context.Response.StatusCode);
 
             // Log all Set-Cookie headers specifically
@@ -60,7 +64,7 @@ public class HeaderSizeLoggingMiddleware
                 var cookies = context.Response.Headers["Set-Cookie"];
                 for (int i = 0; i < cookies.Count; i++)
                 {
-                    var cookieSize = System.Text.Encoding.UTF8.GetByteCount(cookies[i]);
+                    var cookieSize = Encoding.UTF8.GetByteCount(cookies[i]);
                     _logger.LogWarning("Set-Cookie[{Index}]: {CookieSize} bytes", i, cookieSize);
                 }
             }
