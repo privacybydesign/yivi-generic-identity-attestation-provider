@@ -26,5 +26,5 @@ public interface IIdentityProviderService
     /// Get all identity providers.
     /// </summary>
     /// <returns>A list of all the identity providers.</returns>
-    List<IdentityProvider> GetAll();
+    IReadOnlyList<IdentityProvider> GetAll();
 }

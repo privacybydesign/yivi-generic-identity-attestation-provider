@@ -58,5 +58,5 @@ public class IdentityProviderService(IFileSystem fileSystem) : IIdentityProvider
     public IdentityProvider? GetBySlug(string slug) => _identityProviders.FirstOrDefault(idp => idp.Slug == slug);
 
     /// <inheritdoc/>
-    public List<IdentityProvider> GetAll() => _identityProviders;
+    public IReadOnlyList<IdentityProvider> GetAll() => _identityProviders;
 }
