@@ -16,6 +16,7 @@ function Issuance() {
     const {t, i18n} = useTranslation();
     let {slug} = useParams();
     const navigate = useNavigate();
+    const sessionUrl = `${window.location.origin}/api/identity-provider/${slug}/irma-endpoint`
 
     useEffect(() => {
         void populateIdentityProviderData(); // https://stackoverflow.com/a/64234381
@@ -30,7 +31,7 @@ function Issuance() {
             // Back-end options
             session: {
                 // Point this to your controller:
-                url: `https://giap.staging.yivi.app/api/identity-provider/${slug}/irma-endpoint`,
+                url: sessionUrl,
 
                 start: {
                     url: (o: { url: string; }) => `${o.url}/start`,
