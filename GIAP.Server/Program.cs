@@ -40,14 +40,6 @@ builder.Services
     {
         configure.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme; // authenticate using cookies
     })
-    // todo temp cookie testing
-    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
-    {
-        options.CookieManager = new ChunkingCookieManager
-        {
-            ChunkSize = 3450
-        };
-    })
     .AddIdentityProviders();
 
 // todo temp testing
