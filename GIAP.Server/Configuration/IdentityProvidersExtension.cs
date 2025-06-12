@@ -17,7 +17,7 @@ public static class IdentityProvidersExtension
     public static AuthenticationBuilder AddIdentityProviders(this AuthenticationBuilder builder)
     {
         var identityProviderService =
-            builder.Services.BuildServiceProvider().GetRequiredService<IdentityProviderService>();
+            builder.Services.BuildServiceProvider().GetRequiredService<IIdentityProviderService>();
         var identityProviders = identityProviderService.GetAll();
 
         foreach (var identityProvider in identityProviders)
