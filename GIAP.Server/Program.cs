@@ -54,7 +54,8 @@ builder.Services
 //https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-8.0&preserve-view=true#forwarded-headers-middleware-order
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
-    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto |
+                               ForwardedHeaders.XForwardedHost | ForwardedHeaders.XForwardedPrefix;
 
     //https://stackoverflow.com/questions/43749236/net-core-x-forwarded-proto-not-working
     options.KnownNetworks.Clear();
