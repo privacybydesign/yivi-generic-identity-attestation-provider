@@ -40,6 +40,7 @@ builder.Services
     {
         configure.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme; // authenticate using cookies
     })
+    .AddCookie()
     .AddIdentityProviders();
 
 // todo temp testing
