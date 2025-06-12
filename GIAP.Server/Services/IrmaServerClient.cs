@@ -1,7 +1,7 @@
 ﻿namespace GIAP.Server.Services;
 
 /// <inheritdoc/>
-public class IrmaServerClient(HttpClient httpClient) : IIrmaServerClient
+public class IrmaServerClient(HttpClient httpClient, ILogger<IrmaServerClient> logger) : IIrmaServerClient
 {
     /// <inheritdoc/>
     public async Task<string> IssueCredential(
@@ -23,6 +23,13 @@ public class IrmaServerClient(HttpClient httpClient) : IIrmaServerClient
         var credentialId = $"{schemeName}.{partCredentialId}"; // pbdf-staging.pbdf.microsoftEntraIdReference
 
         var irmaServerUrl = irmaServerBaseUrl + "/session";
+        logger.LogInformation(
+            "IrmaServerBaseUrl: {IrmaServerBaseUrl}, " +
+            "SchemeName: {SchemeName}, " +
+            "SchemePath: {SchemePath}",
+            irmaServerBaseUrl, schemeName, schemePath
+        );
+        logger.LogInformation("IRMA Server URL: {IrmaServerUrl}", irmaServerUrl);
         var validity = DateTimeOffset.UtcNow.AddMonths(issuanceValidityInMonths).ToUnixTimeSeconds();
 
         var requestData = new Dictionary<string, object>
