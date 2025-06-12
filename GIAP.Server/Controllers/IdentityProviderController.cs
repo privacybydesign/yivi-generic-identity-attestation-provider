@@ -26,7 +26,8 @@ public class IdentityProviderController(
     IApiClient apiClient,
     ISchemeCredentialClient schemeCredentialClient,
     ICredentialAttributeService credentialAttributeService,
-    IIrmaServerClient irmaServerClient
+    IIrmaServerClient irmaServerClient,
+    ILogger<IdentityProviderController> logger
 ) : ControllerBase
 {
     /// <summary>
@@ -61,6 +62,8 @@ public class IdentityProviderController(
 
         // todo debugging
         var baseUrl = $"{Request.Scheme}://{Request.Host}";
+        logger.LogInformation($"Redirect: {baseUrl}/{language}/{slug}/load-attributes");
+
         return Redirect($"{baseUrl}/{language}/{slug}/load-attributes");
         // return LocalRedirect($"/{language}/{slug}/load-attributes");
     }
