@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using DotNetEnv;
 using GIAP.Server.Models;
 using GIAP.Server.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +23,7 @@ public class IdentityProviderController(
     ISchemeCredentialClient schemeCredentialClient,
     ICredentialAttributeService credentialAttributeService,
     IIrmaServerClient irmaServerClient,
+    IDotNetEnvWrapper dotNetEnvWrapper,
     ILogger<IdentityProviderController> logger
 ) : ControllerBase
 {
@@ -74,10 +74,10 @@ public class IdentityProviderController(
         var idpAuthData = (HttpContext.Items["authIdpData"] as IdentityProviderAuthData)!; // trust middleware
 
         // Get scheme attributes
-        var schemeUrl = Env.GetString("SCHEME_BASE_URL");
-        var scheme = Env.GetString("SCHEME_NAME");
-        var fullSchemeUrl = $"{schemeUrl}/{scheme}/{idpAuthData.IdentityProvider.SchemePath}";
-        var schemeAttributes = await schemeCredentialClient.GetAttributes(fullSchemeUrl, language);
+        var schemeBaseUrl = dotNetEnvWrapper.GetSchemeBaseUrl();
+        var schemeName = dotNetEnvWrapper.GetSchemeName();
+        var schemeUrl = $"{schemeBaseUrl}/{schemeName}/{idpAuthData.IdentityProvider.SchemePath}";
+        var schemeAttributes = await schemeCredentialClient.GetAttributes(schemeUrl, language);
 
         // Get API data
         var apiUrls = idpAuthData.IdentityProvider.ApiUrls;
@@ -113,11 +113,9 @@ public class IdentityProviderController(
     public async Task<IActionResult> IrmaSessionStart(string slug)
     {
         var idpAuthData = (HttpContext.Items["authIdpData"] as IdentityProviderAuthData)!; // trust middleware
-
-
-        var irmaServerBaseUrl = Env.GetString("IRMA_SERVER_BASE_URL");
-        var irmaServerApiToken = Env.GetString("IRMA_SERVER_API_TOKEN");
-        var schemeName = Env.GetString("SCHEME_NAME");
+        var irmaServerBaseUrl = dotNetEnvWrapper.GetIrmaServerBaseUrl();
+        var irmaServerApiToken = dotNetEnvWrapper.GetIrmaServerApiToken();
+        var schemeName = dotNetEnvWrapper.GetSchemeName();
 
         var apiData = new Dictionary<string, string>();
         if (idpAuthData.IdentityProvider.ApiUrls != null)

@@ -13,6 +13,7 @@ Env.Load();
 builder.Services.AddTransient<IAttributeMapperService, AttributeMapperService>();
 builder.Services.AddTransient<ICredentialAttributeService, CredentialAttributeService>();
 
+builder.Services.AddSingleton<IDotNetEnvWrapper, DotNetDotNetEnvWrapperWrapper>();
 builder.Services.AddSingleton<IFileSystem, FileSystem>();
 builder.Services.AddSingleton<IIdentityProviderService, IdentityProviderService>(serviceProvider =>
 {
