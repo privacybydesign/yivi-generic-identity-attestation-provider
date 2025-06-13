@@ -1,5 +1,6 @@
 using DotNetEnv;
 using GIAP.Server.Configuration;
+using GIAP.Server.Middleware;
 using GIAP.Server.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -56,6 +57,8 @@ var app = builder.Build();
 
 app.UseForwardedHeaders(); // todo temp testing
 app.UseAuthentication(); // todo temp fixing
+
+app.UseMiddleware<IdentityProviderAuthMiddleware>();
 
 app.UseDefaultFiles();
 app.UseStaticFiles();

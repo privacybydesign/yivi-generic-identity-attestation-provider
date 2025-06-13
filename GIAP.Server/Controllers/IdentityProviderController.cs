@@ -1,11 +1,8 @@
-﻿using System.Security.Claims;
-using System.Text.Json;
+﻿using System.Text.Json;
 using DotNetEnv;
 using GIAP.Server.Models;
 using GIAP.Server.Services;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace GIAP.Server.Controllers;
 
@@ -55,11 +52,8 @@ public class IdentityProviderController(
     /// <param name="language">The language of the user, such as "en".</param>
     /// <returns>LocalRedirect the user back to the frontend.</returns>
     [HttpGet("/api/identity-provider/{slug}/ui-login/{language}")]
-    public async Task<IActionResult> UiLogin(string slug, string language)
+    public IActionResult UiLogin(string slug, string language)
     {
-        var (failureResponse, idpAuthData) = await IdentityProviderAuth(HttpContext, slug);
-        if (failureResponse != null || idpAuthData == null) return failureResponse!;
-
         // todo debugging
         var baseUrl = $"{Request.Scheme}://{Request.Host}";
         logger.LogInformation($"Redirect: {baseUrl}/{language}/{slug}/load-attributes");
@@ -77,8 +71,7 @@ public class IdentityProviderController(
     [HttpGet("/api/identity-provider/{slug}/attributes/{language}")]
     public async Task<IActionResult> GetAttributes(string slug, string language)
     {
-        var (failureResponse, idpAuthData) = await IdentityProviderAuth(HttpContext, slug);
-        if (failureResponse != null || idpAuthData == null) return failureResponse!;
+        var idpAuthData = (HttpContext.Items["authIdpData"] as IdentityProviderAuthData)!; // trust middleware
 
         // Get scheme attributes
         var schemeUrl = Env.GetString("SCHEME_BASE_URL");
@@ -119,8 +112,8 @@ public class IdentityProviderController(
     [HttpGet("/api/identity-provider/{slug}/irma-endpoint/start")]
     public async Task<IActionResult> IrmaSessionStart(string slug)
     {
-        var (failureResponse, idpAuthData) = await IdentityProviderAuth(HttpContext, slug);
-        if (failureResponse != null || idpAuthData == null) return failureResponse!;
+        var idpAuthData = (HttpContext.Items["authIdpData"] as IdentityProviderAuthData)!; // trust middleware
+
 
         var irmaServerBaseUrl = Env.GetString("IRMA_SERVER_BASE_URL");
         var irmaServerApiToken = Env.GetString("IRMA_SERVER_API_TOKEN");
@@ -152,47 +145,5 @@ public class IdentityProviderController(
         irmaServerResponseWithoutToken!.Remove("token"); // assume the response succeeds with token
 
         return Ok(irmaServerResponseWithoutToken);
-    }
-
-    /// <summary>
-    /// Checks if the identity provider exists and if the user is authenticated through it.
-    /// If authentication fails, it challenges the user to log in at the identity provider.
-    /// </summary>
-    /// <param name="httpContext">The HTTP context to log in the user at the identity provider.</param>
-    /// <param name="slug">The slug of the identity provider.</param>
-    /// <returns>Returns a tuple with either a failure response or IdentityProviderAuthData if successful.</returns>
-    private async Task<(IActionResult? failureResponse, IdentityProviderAuthData? authIdpData)> IdentityProviderAuth(
-        HttpContext httpContext,
-        string slug
-    )
-    {
-        // Check if the identity provider exists
-        var identityProvider = identityProviderService.GetBySlug(slug);
-        if (identityProvider == null) return (NotFound(), null);
-
-        // Authenticate
-        var authResult = await httpContext.AuthenticateAsync(identityProvider.Slug);
-        if (!authResult.Succeeded || authResult.Principal == null)
-        {
-            // If authentication failed, challenge the user to log in
-            return (Challenge(identityProvider.Slug), null);
-        }
-
-        return (null, new IdentityProviderAuthData
-        {
-            IdentityProvider = identityProvider,
-            AccessToken = GetAccessToken(authResult),
-            JwtClaims = GetJwtClaims(authResult.Principal),
-        });
-    }
-
-    private Dictionary<string, string> GetJwtClaims(ClaimsPrincipal user)
-    {
-        return user.Claims.ToDictionary(claim => claim.Type, claim => claim.Value);
-    }
-
-    private string GetAccessToken(AuthenticateResult userResult)
-    {
-        return userResult.Properties!.GetTokenValue(OpenIdConnectParameterNames.AccessToken)!;
     }
 }
