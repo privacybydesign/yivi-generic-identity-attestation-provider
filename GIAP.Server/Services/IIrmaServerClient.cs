@@ -1,4 +1,6 @@
-﻿namespace GIAP.Server.Services;
+﻿using GIAP.Server.Models;
+
+namespace GIAP.Server.Services;
 
 /// <summary>
 /// The IrmaServerClient is used to issue credentials to the IRMA server.
@@ -15,7 +17,7 @@ public interface IIrmaServerClient
     /// <param name="issuanceValidityInMonths">The issuanceValidityInMonths as defined in the IdentityProvider class.</param>
     /// <param name="attributes">The attributes with keys as IDs mapped to their values.</param>
     /// <returns>Returns the response of the IRMA Server.</returns>
-    Task<string> IssueCredential(
+    Task<IssuanceResponse> IssueCredential(
         string irmaServerBaseUrl,
         string irmaServerApiToken,
         string schemeName,

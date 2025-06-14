@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using GIAP.Server.Models;
+﻿using GIAP.Server.Models;
 using GIAP.Server.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -139,8 +138,11 @@ public class IdentityProviderController(
         );
 
         // As described in the IRMA protocol, remove the token from the IRMA Server response to the frontend
-        var irmaServerResponseWithoutToken = JsonSerializer.Deserialize<Dictionary<string, object>>(irmaServerResponse);
-        irmaServerResponseWithoutToken!.Remove("token"); // assume the response succeeds with token
+        var irmaServerResponseWithoutToken = new
+        {
+            irmaServerResponse.FrontendRequest,
+            irmaServerResponse.SessionPtr
+        };
 
         return Ok(irmaServerResponseWithoutToken);
     }
