@@ -40,21 +40,21 @@ public class IrmaServerClient(HttpClient httpClient, ILogger<IrmaServerClient> l
         logger.LogInformation("IRMA Server URL: {IrmaServerUrl}", irmaServerUrl);
         var validity = DateTimeOffset.UtcNow.AddMonths(issuanceValidityInMonths).ToUnixTimeSeconds();
 
-        var requestData = new Dictionary<string, object>
+        var issuanceRequest = new IssuanceRequest
         {
-            ["@context"] = "https://irma.app/ld/request/issuance/v2",
-            ["credentials"] = new[]
-            {
-                new
+            Context = "https://irma.app/ld/request/issuance/v2",
+            Credentials =
+            [
+                new Credential
                 {
-                    credential = credentialId,
-                    validity,
-                    attributes
+                    CredentialId = credentialId,
+                    Validity = validity,
+                    Attributes = attributes
                 }
-            }
+            ]
         };
 
-        var response = await httpClient.PostAsJsonAsync(irmaServerUrl, requestData);
+        var response = await httpClient.PostAsJsonAsync(irmaServerUrl, issuanceRequest);
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync();
