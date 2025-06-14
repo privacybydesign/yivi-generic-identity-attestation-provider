@@ -27,6 +27,13 @@ public class IdentityProviderAuthMiddleware(RequestDelegate next, IIdentityProvi
             return;
         }
 
+        // Check: Allow non-backend requests to pass through without authentication
+        if (!context.Request.Path.StartsWithSegments("/api"))
+        {
+            await next(context);
+            return;
+        }
+
         // Check: Only allow requests with a valid identity provider slug
         var slug = context.Request.RouteValues["slug"]?.ToString();
         if (string.IsNullOrEmpty(slug))
