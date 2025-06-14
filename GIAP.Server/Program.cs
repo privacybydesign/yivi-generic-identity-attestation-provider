@@ -55,8 +55,8 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 
 var app = builder.Build();
 
-app.UseForwardedHeaders(); // todo temp testing
-app.UseAuthentication(); // todo temp fixing
+app.UseForwardedHeaders();
+app.UseAuthentication();
 
 app.UseMiddleware<IdentityProviderAuthMiddleware>();
 
