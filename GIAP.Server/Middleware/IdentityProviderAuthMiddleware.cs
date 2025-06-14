@@ -20,7 +20,14 @@ public class IdentityProviderAuthMiddleware(RequestDelegate next, IIdentityProvi
 {
     public async Task InvokeAsync(HttpContext context)
     {
-        // Check 1: Only allow requests with a valid identity provider slug
+        // Check: Allow health check to pass through without authentication
+        if (context.Request.Path.Equals("/health"))
+        {
+            await next(context);
+            return;
+        }
+
+        // Check: Only allow requests with a valid identity provider slug
         var slug = context.Request.RouteValues["slug"]?.ToString();
         if (string.IsNullOrEmpty(slug))
         {
@@ -37,15 +44,14 @@ public class IdentityProviderAuthMiddleware(RequestDelegate next, IIdentityProvi
             return;
         }
 
-        // Check 2: Allow requests to pass through without authentication for the following paths
-        if (context.Request.Path.Equals($"/api/identity-provider/{slug}") ||
-            context.Request.Path.Equals($"/health"))
+        // Check: Allow requests to pass through without authentication for the following paths
+        if (context.Request.Path.Equals($"/api/identity-provider/{slug}"))
         {
             await next(context);
             return;
         }
 
-        // Check 3: Require authentication
+        // Check: Require authentication
         var authResult = await context.AuthenticateAsync(identityProvider.Slug);
         if (!authResult.Succeeded || authResult.Principal == null)
         {
