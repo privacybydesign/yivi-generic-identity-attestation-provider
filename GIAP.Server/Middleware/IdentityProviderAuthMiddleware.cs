@@ -38,7 +38,8 @@ public class IdentityProviderAuthMiddleware(RequestDelegate next, IIdentityProvi
         }
 
         // Check 2: Allow requests to pass through without authentication for the following paths
-        if (context.Request.Path.Equals($"/api/identity-provider/{slug}"))
+        if (context.Request.Path.Equals($"/api/identity-provider/{slug}") ||
+            context.Request.Path.Equals($"/health"))
         {
             await next(context);
             return;
