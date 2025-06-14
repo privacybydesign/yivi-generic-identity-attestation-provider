@@ -6,11 +6,6 @@ namespace GIAP.Server.Services;
 /// <inheritdoc/>
 public class IrmaServerClient(HttpClient httpClient, ILogger<IrmaServerClient> logger) : IIrmaServerClient
 {
-    private readonly JsonSerializerOptions _serializerOptions = new()
-    {
-        PropertyNameCaseInsensitive = true,
-    };
-
     /// <inheritdoc/>
     public async Task<IssuanceResponse> IssueCredential(
         string irmaServerBaseUrl,
@@ -65,6 +60,6 @@ public class IrmaServerClient(HttpClient httpClient, ILogger<IrmaServerClient> l
     private IssuanceResponse JsonToIssuanceResponse(string json)
     {
         // Assuming the IRMA issuance response is always a JSON that can be mapped to IssuanceResponse.
-        return JsonSerializer.Deserialize<IssuanceResponse>(json, _serializerOptions)!;
+        return JsonSerializer.Deserialize<IssuanceResponse>(json)!;
     }
 }
