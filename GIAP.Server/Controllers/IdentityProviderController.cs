@@ -57,8 +57,8 @@ public class IdentityProviderController(
         var baseUrl = $"{Request.Scheme}://{Request.Host}";
         logger.LogInformation($"Redirect: {baseUrl}/{language}/{slug}/load-attributes");
 
-        return Redirect($"{baseUrl}/{language}/{slug}/load-attributes");
-        // return LocalRedirect($"/{language}/{slug}/load-attributes");
+        // return Redirect($"{baseUrl}/{language}/{slug}/load-attributes");
+        return LocalRedirect($"/{language}/{slug}/load-attributes");
     }
 
     /// <summary>
