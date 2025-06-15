@@ -26,13 +26,6 @@ public class IrmaServerClient(HttpClient httpClient, ILogger<IrmaServerClient> l
         var credentialId = $"{schemeName}.{partCredentialId}"; // pbdf-staging.pbdf.microsoftEntraIdReference
 
         var irmaServerUrl = irmaServerBaseUrl + "/session";
-        logger.LogInformation(
-            "IrmaServerBaseUrl: {IrmaServerBaseUrl}, " +
-            "SchemeName: {SchemeName}, " +
-            "SchemePath: {SchemePath}",
-            irmaServerBaseUrl, schemeName, schemePath
-        );
-        logger.LogInformation("IRMA Server URL: {IrmaServerUrl}", irmaServerUrl);
         var validity = DateTimeOffset.UtcNow.AddMonths(issuanceValidityInMonths).ToUnixTimeSeconds();
 
         var issuanceRequest = new IssuanceRequest
