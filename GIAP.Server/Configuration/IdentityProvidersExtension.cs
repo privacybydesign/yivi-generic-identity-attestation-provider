@@ -30,6 +30,7 @@ public static class IdentityProvidersExtension
                 configure.CallbackPath = identityProvider.CallbackPath;
                 configure.ResponseType = OpenIdConnectResponseType.Code;
                 configure.SaveTokens = true; // necessary to get the access token for optional API calls
+                configure.UseTokenLifetime = true; // necessary to ensure the token has the same lifetime as the cookie
                 configure.GetClaimsFromUserInfoEndpoint = true; // necessary to get the user info from the IdP
             });
         }
