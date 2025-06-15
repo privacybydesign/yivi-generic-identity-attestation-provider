@@ -53,11 +53,6 @@ public class IdentityProviderController(
     [HttpGet("/api/identity-provider/{slug}/ui-login/{language}")]
     public IActionResult UiLogin(string slug, string language)
     {
-        // todo debugging
-        var baseUrl = $"{Request.Scheme}://{Request.Host}";
-        logger.LogInformation($"Redirect: {baseUrl}/{language}/{slug}/load-attributes");
-
-        // return Redirect($"{baseUrl}/{language}/{slug}/load-attributes");
         return LocalRedirect($"/{language}/{slug}/load-attributes");
     }
 
