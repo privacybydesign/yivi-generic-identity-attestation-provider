@@ -1,9 +1,7 @@
-/* todo temp replace this with proper css */
 #yivi-web-form {
-    position: absolute;
-    top: 60%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    margin: 1rem auto 0 auto;
+    display: flex;
+    justify-content: center;
 }
 
 /* CSS from IBAN issuer: https://github.com/privacybydesign/yivi-iban-issuer/tree/main/react-cra */
@@ -95,6 +93,7 @@ h1 {
     color: #484747;
     max-width: 600px;
     margin: auto;
+    text-align: center;
 }
 
 .alert {
@@ -177,7 +176,7 @@ footer .actions {
     max-width: 600px;
     margin: auto;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 footer a,

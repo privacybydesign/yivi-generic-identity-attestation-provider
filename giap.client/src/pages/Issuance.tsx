@@ -12,6 +12,7 @@ interface IdentityProvider {
 
 function Issuance() {
     const [identityProvider, setIdentityProvider] = useState<IdentityProvider>();
+    const [yiviInitialized, setYiviInitialized] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
     const {t, i18n} = useTranslation();
     let {slug} = useParams();
@@ -23,6 +24,11 @@ function Issuance() {
     }, []);
 
     useEffect(() => {
+        if (!identityProvider) return; // Don't show the QR code until the user can see the identity provider data
+
+        if (yiviInitialized) return; // Don't initialize it multiple times
+        setYiviInitialized(true);
+
         const yiviWeb = yivi.newWeb({
             debugging: true,            // Enable to get helpful output in the browser console
             element: '#yivi-web-form', // Which DOM element to render to
@@ -42,7 +48,7 @@ function Issuance() {
         yiviWeb.start()
             .then(() => navigate(`/${i18n.language}/${slug}/success`))
             .catch((error: any) => console.error("Couldn't do what you asked 😢", error));
-    }, []);
+    }, [identityProvider, yiviInitialized]);
 
     if (error) {
         return <div id="container">
@@ -52,36 +58,43 @@ function Issuance() {
         </div>
     }
 
+    if (!identityProvider) {
+        return (
+            <div id="container">
+                <main id="main-content">
+                    <p>{t("loadingContent")}</p>
+                </main>
+            </div>
+        );
+    }
+
     return (
         <>
-            <div id="yivi-web-form"></div>
-            {identityProvider !== undefined && (
-                <div id="container">
-                    <header>
-                        <h1>{identityProvider.name}</h1>
-                    </header>
-                    <main id="main-content">
-                        <p>{t("loadAttributesInfo")}</p>
-                        <table>
-                            <thead>
-                            <tr>
-                                <th>Attributes</th>
-                                <th>Values</th>
+            <div id="container">
+                <header>
+                    <h1>{identityProvider.name}</h1>
+                </header>
+                <main id="main-content">
+                    <p>{t("loadAttributesInfo")}</p>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>{t("attributes")}</th>
+                            <th>{t("values")}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {Object.entries(identityProvider.attributes).map(([key, value]) => (
+                            <tr key={key}>
+                                <td>{key}</td>
+                                <td>{value}</td>
                             </tr>
-                            </thead>
-                            <tbody>
-                            {Object.entries(identityProvider.attributes).map(([key, value]) => (
-                                <tr key={key}>
-                                    <td>{key}</td>
-                                    <td>{value}</td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
-                    </main>
-                </div>
-            )}
-            {/*</form>*/}
+                        ))}
+                        </tbody>
+                    </table>
+                    <div id="yivi-web-form"></div>
+                </main>
+            </div>
         </>
     );
 
