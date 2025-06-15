@@ -23,7 +23,6 @@ function Issuance() {
     }, []);
 
     useEffect(() => {
-        // todo set language to i18n.language, but check which languages are supported by newWeb
         const yiviWeb = yivi.newWeb({
             debugging: true,            // Enable to get helpful output in the browser console
             element: '#yivi-web-form', // Which DOM element to render to
