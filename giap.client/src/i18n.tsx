@@ -27,7 +27,7 @@ i18n
                     loadAttributesInfo: "The attributes below can be added to your Yivi app:",
                     attributes: "Attributes",
                     values: "Values",
-                    successHeader: "Attributes Loaded.",
+                    successHeader: "Attributes Loaded",
                     success: "Congratulations! Your attributes have been added to your Yivi app. They should now be visible there. You can now use these attributes on any website that accepts them.",
                     loadingContent: "Please wait...",
                 }
@@ -40,7 +40,7 @@ i18n
                     loadAttributesInfo: "De volgende attributen kunnen nu in uw Yivi app geladen worden:",
                     attributes: "Attributen",
                     values: "Waarden",
-                    successHeader: "Attributen geladen.",
+                    successHeader: "Attributen geladen",
                     success: "Gefeliciteerd! Uw attributen zijn nu in uw IRMA app geladen. Daar zijn ze nu zichtbaar. U kunt deze attributen gebruiken op iedere website die ze accepteert.",
                     loadingContent: "Een moment a.u.b...",
                 }
