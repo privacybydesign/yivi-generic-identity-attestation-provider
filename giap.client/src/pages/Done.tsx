@@ -6,7 +6,7 @@ function Done() {
 
     return <>
         <header>
-            <h1>Attributes Loaded</h1>
+            <h1>{t("successHeader")}</h1>
         </header>
         <main id="main-content">
             <div className="imageContainer">

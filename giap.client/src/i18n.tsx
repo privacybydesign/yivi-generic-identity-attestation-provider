@@ -25,7 +25,11 @@ i18n
                     loginInfo: "Attributes can be loaded into your Yivi app. To load these attributes, it is necessary that you log in using the button below and if prompted give Yivi access to your profile data. We use this data only during attribute loading.",
                     backendError: "Something went wrong. Please try again.",
                     loadAttributesInfo: "The attributes below can be added to your Yivi app:",
-                    success: "Congratulations! Your attributes have been added to your Yivi app. They should now be visible there. You can now use these attributes on any website that accepts them."
+                    attributes: "Attributes",
+                    values: "Values",
+                    successHeader: "Attributes Loaded.",
+                    success: "Congratulations! Your attributes have been added to your Yivi app. They should now be visible there. You can now use these attributes on any website that accepts them.",
+                    loadingContent: "Please wait...",
                 }
             },
             nl: {
@@ -34,7 +38,11 @@ i18n
                     loginInfo: "Attributen kunnen eenvoudig in de Yivi app geladen worden. Hiervoor dient u in te loggen via de knop hieronder en eventueel toestemming te geven. We gebruiken deze gegevens alleen tijdens het laden van de attributen in de app.",
                     backendError: "Er is iets misgegaan. Probeer het opnieuw.",
                     loadAttributesInfo: "De volgende attributen kunnen nu in uw Yivi app geladen worden:",
-                    success: "Gefeliciteerd! Uw attributen zijn nu in uw IRMA app geladen. Daar zijn ze nu zichtbaar. U kunt deze attributen gebruiken op iedere website die ze accepteert."
+                    attributes: "Attributen",
+                    values: "Waarden",
+                    successHeader: "Attributen geladen.",
+                    success: "Gefeliciteerd! Uw attributen zijn nu in uw IRMA app geladen. Daar zijn ze nu zichtbaar. U kunt deze attributen gebruiken op iedere website die ze accepteert.",
+                    loadingContent: "Een moment a.u.b...",
                 }
             }
         }
