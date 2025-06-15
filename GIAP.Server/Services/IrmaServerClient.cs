@@ -42,12 +42,28 @@ public class IrmaServerClient(HttpClient httpClient, ILogger<IrmaServerClient> l
             ]
         };
 
-        var response = await httpClient.PostAsJsonAsync(irmaServerUrl, issuanceRequest);
-        response.EnsureSuccessStatusCode();
+        try
+        {
+            var response = await httpClient.PostAsJsonAsync(irmaServerUrl, issuanceRequest);
+            response.EnsureSuccessStatusCode();
 
-        var json = await response.Content.ReadAsStringAsync();
+            var json = await response.Content.ReadAsStringAsync();
 
-        return JsonToIssuanceResponse(json);
+            return JsonToIssuanceResponse(json);
+        }
+        catch (HttpRequestException e)
+        {
+            logger.LogError(e, "IrmaServerClient: HTTP request failed ({StatusCode}) for credential: {Credential}",
+                e.StatusCode,
+                credentialId);
+            throw;
+        }
+        catch (Exception e) when (e is JsonException or ArgumentNullException or NotSupportedException)
+        {
+            logger.LogError(e, "IrmaServerClient: JSON deserialization failed for credential: {Credential}",
+                credentialId);
+            throw;
+        }
     }
 
     private IssuanceResponse JsonToIssuanceResponse(string json)

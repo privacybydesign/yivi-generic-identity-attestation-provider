@@ -4,7 +4,7 @@ using System.Text.Json;
 namespace GIAP.Server.Services;
 
 /// <inheritdoc/>
-public class ApiClient(HttpClient httpClient) : IApiClient
+public class ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : IApiClient
 {
     /// <inheritdoc/>
     public async Task<Dictionary<string, string>> Get(string accessToken, List<string> urls)
@@ -29,12 +29,24 @@ public class ApiClient(HttpClient httpClient) : IApiClient
         httpClient.DefaultRequestHeaders.Clear();
         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-        var response = await httpClient.GetAsync(url);
+        try
+        {
+            var response = await httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
 
-        response.EnsureSuccessStatusCode();
-        var json = await response.Content.ReadAsStringAsync();
-
-        return JsonToDictionary(json);
+            return JsonToDictionary(json);
+        }
+        catch (HttpRequestException e)
+        {
+            logger.LogError(e, "ApiClient: HTTP request failed ({StatusCode}) for URL: {Url}", e.StatusCode, url);
+            throw;
+        }
+        catch (Exception e) when (e is JsonException or ArgumentNullException or NotSupportedException)
+        {
+            logger.LogError(e, "ApiClient: JSON deserialization failed for URL: {Url}", url);
+            throw;
+        }
     }
 
     private Dictionary<string, string> JsonToDictionary(string json)

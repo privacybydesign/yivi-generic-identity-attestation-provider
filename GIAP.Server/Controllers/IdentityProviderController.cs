@@ -73,37 +73,48 @@ public class IdentityProviderController(
     [HttpGet("/api/identity-provider/{slug}/attributes/{language}")]
     public async Task<IActionResult> GetAttributes(string slug, string language)
     {
-        var idpAuthData = (HttpContext.Items["authIdpData"] as IdentityProviderAuthData)!; // trust middleware
-
-        // Get scheme attributes
-        var schemeBaseUrl = dotNetEnvWrapper.GetSchemeBaseUrl();
-        var schemeName = dotNetEnvWrapper.GetSchemeName();
-        var schemeUrl = $"{schemeBaseUrl}/{schemeName}/{idpAuthData.IdentityProvider.SchemePath}";
-        var schemeAttributes = await schemeCredentialClient.GetAttributes(schemeUrl, language);
-
-        // Get API data
-        var apiUrls = idpAuthData.IdentityProvider.ApiUrls;
-        var apiData = new Dictionary<string, string>();
-        if (apiUrls != null)
+        try
         {
-            apiData = await apiClient.Get(idpAuthData.AccessToken, apiUrls);
+            var idpAuthData = (HttpContext.Items["authIdpData"] as IdentityProviderAuthData)!; // trust middleware
+
+            // Get scheme attributes
+            var schemeBaseUrl = dotNetEnvWrapper.GetSchemeBaseUrl();
+            var schemeName = dotNetEnvWrapper.GetSchemeName();
+            var schemeUrl = $"{schemeBaseUrl}/{schemeName}/{idpAuthData.IdentityProvider.SchemePath}";
+            var schemeAttributes = await schemeCredentialClient.GetAttributes(schemeUrl, language);
+
+            // Get API data
+            var apiUrls = idpAuthData.IdentityProvider.ApiUrls;
+            var apiData = new Dictionary<string, string>();
+            if (apiUrls != null)
+            {
+                apiData = await apiClient.Get(idpAuthData.AccessToken, apiUrls);
+            }
+
+            var credentialForDisplay = credentialAttributeService.GetCredentialAttributesForDisplay(
+                schemeAttributes,
+                idpAuthData.IdentityProvider.AttributeMapping,
+                idpAuthData.JwtClaims,
+                apiData
+            );
+
+            var response = new
+            {
+                idpAuthData.IdentityProvider.Name,
+                idpAuthData.IdentityProvider.Slug,
+                Attributes = credentialForDisplay
+            };
+            return Ok(response);
         }
-
-        var credentialForDisplay = credentialAttributeService.GetCredentialAttributesForDisplay(
-            schemeAttributes,
-            idpAuthData.IdentityProvider.AttributeMapping,
-            idpAuthData.JwtClaims,
-            apiData
-        );
-
-        var response = new
+        catch (HttpRequestException)
         {
-            idpAuthData.IdentityProvider.Name,
-            idpAuthData.IdentityProvider.Slug,
-            Attributes = credentialForDisplay
-        };
-
-        return Ok(response);
+            return StatusCode(502, "Bad Gateway: Unable to get attributes from external services.");
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "GetAttributes ({Slug}): Unexpected error {Error}", slug, e.Message);
+            return StatusCode(500, "Internal Server Error: Something unexpected happened.");
+        }
     }
 
     /// <summary>
@@ -114,39 +125,52 @@ public class IdentityProviderController(
     [HttpGet("/api/identity-provider/{slug}/irma-endpoint/start")]
     public async Task<IActionResult> IrmaSessionStart(string slug)
     {
-        var idpAuthData = (HttpContext.Items["authIdpData"] as IdentityProviderAuthData)!; // trust middleware
-        var irmaServerBaseUrl = dotNetEnvWrapper.GetIrmaServerBaseUrl();
-        var irmaServerApiToken = dotNetEnvWrapper.GetIrmaServerApiToken();
-        var schemeName = dotNetEnvWrapper.GetSchemeName();
-
-        var apiData = new Dictionary<string, string>();
-        if (idpAuthData.IdentityProvider.ApiUrls != null)
+        try
         {
-            apiData = await apiClient.Get(idpAuthData.AccessToken, idpAuthData.IdentityProvider.ApiUrls);
+            var idpAuthData = (HttpContext.Items["authIdpData"] as IdentityProviderAuthData)!; // trust middleware
+            var irmaServerBaseUrl = dotNetEnvWrapper.GetIrmaServerBaseUrl();
+            var irmaServerApiToken = dotNetEnvWrapper.GetIrmaServerApiToken();
+            var schemeName = dotNetEnvWrapper.GetSchemeName();
+
+            var apiData = new Dictionary<string, string>();
+            if (idpAuthData.IdentityProvider.ApiUrls != null)
+            {
+                apiData = await apiClient.Get(idpAuthData.AccessToken, idpAuthData.IdentityProvider.ApiUrls);
+            }
+
+            var credential = credentialAttributeService.GetCredentialAttributesForIssuance(
+                idpAuthData.IdentityProvider.AttributeMapping,
+                idpAuthData.JwtClaims,
+                apiData
+            );
+
+            var irmaServerResponse = await irmaServerClient.IssueCredential(
+                irmaServerBaseUrl,
+                irmaServerApiToken,
+                schemeName,
+                idpAuthData.IdentityProvider.SchemePath,
+                idpAuthData.IdentityProvider.IssuanceValidityInMonths,
+                credential
+            );
+
+            // As described in the IRMA protocol, remove the token from the IRMA Server response to the frontend
+            var irmaServerResponseWithoutToken = new
+            {
+                irmaServerResponse.FrontendRequest,
+                irmaServerResponse.SessionPtr
+            };
+
+            return Ok(irmaServerResponseWithoutToken);
         }
-
-        var credential = credentialAttributeService.GetCredentialAttributesForIssuance(
-            idpAuthData.IdentityProvider.AttributeMapping,
-            idpAuthData.JwtClaims,
-            apiData
-        );
-
-        var irmaServerResponse = await irmaServerClient.IssueCredential(
-            irmaServerBaseUrl,
-            irmaServerApiToken,
-            schemeName,
-            idpAuthData.IdentityProvider.SchemePath,
-            idpAuthData.IdentityProvider.IssuanceValidityInMonths,
-            credential
-        );
-
-        // As described in the IRMA protocol, remove the token from the IRMA Server response to the frontend
-        var irmaServerResponseWithoutToken = new
+        catch (HttpRequestException)
         {
-            irmaServerResponse.FrontendRequest,
-            irmaServerResponse.SessionPtr
-        };
-
-        return Ok(irmaServerResponseWithoutToken);
+            return StatusCode(502,
+                "Bad Gateway: Unable to get data for issuance or failed to issue the credential to the IRMA server.");
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "IrmaSessionStart ({Slug}): Unexpected error {Error}", slug, e.Message);
+            return StatusCode(500, "Internal Server Error: Something unexpected happened.");
+        }
     }
 }
