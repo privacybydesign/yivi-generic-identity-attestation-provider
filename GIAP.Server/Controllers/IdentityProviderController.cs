@@ -46,10 +46,18 @@ public class IdentityProviderController(
 
     /// <summary>
     /// Logs the user in at the identity provider.
+    /// After a successful login, or if the user was already authenticated,
+    /// the user is redirected to a frontend route.
     /// </summary>
+    /// <remarks>
+    /// This assumes the frontend navigates the user to this endpoint.
+    /// This endpoint then relies on the IdentityProviderAuthMiddleware to handle the OIDC auth flow.
+    /// After successful authentication, or if the user was already authenticated,
+    /// the user is then redirected back to a frontend route (see main.tsx).
+    /// </remarks>
     /// <param name="slug">The identity provider slug.</param>
     /// <param name="language">The language of the user, such as "en".</param>
-    /// <returns>LocalRedirect the user back to the frontend.</returns>
+    /// <returns>Redirect the user back to the frontend.</returns>
     [HttpGet("/api/identity-provider/{slug}/ui-login/{language}")]
     public IActionResult UiLogin(string slug, string language)
     {
