@@ -21,7 +21,7 @@ i18n
         resources: {
             en: {
                 translation: {
-                    loginButton: "Log in to load attributes",
+                    loginButton: "Log in",
                     loginInfo: "Attributes can be loaded into your Yivi app. To load these attributes, it is necessary that you log in using the button below and if prompted give Yivi access to your profile data. We use this data only during attribute loading.",
                     backendError: "Something went wrong. Please try again.",
                     loadAttributesInfo: "The attributes below can be added to your Yivi app:",
@@ -34,7 +34,7 @@ i18n
             },
             nl: {
                 translation: {
-                    loginButton: "Log in om attributen te laden",
+                    loginButton: "Log in",
                     loginInfo: "Attributen kunnen eenvoudig in de Yivi app geladen worden. Hiervoor dient u in te loggen via de knop hieronder en eventueel toestemming te geven. We gebruiken deze gegevens alleen tijdens het laden van de attributen in de app.",
                     backendError: "Er is iets misgegaan. Probeer het opnieuw.",
                     loadAttributesInfo: "De volgende attributen kunnen nu in uw Yivi app geladen worden:",
