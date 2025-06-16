@@ -1,7 +1,11 @@
 #yivi-web-form {
-    margin: 1rem auto 0 auto;
+    margin: 1em 0 0 0;
     display: flex;
     justify-content: center;
+}
+
+th, td {
+    text-align: left;
 }
 
 /* CSS from IBAN issuer: https://github.com/privacybydesign/yivi-iban-issuer/tree/main/react-cra */
@@ -93,7 +97,6 @@ h1 {
     color: #484747;
     max-width: 600px;
     margin: auto;
-    text-align: center;
 }
 
 .alert {
@@ -176,7 +179,8 @@ footer .actions {
     max-width: 600px;
     margin: auto;
     display: flex;
-    justify-content: center;
+    /* To match Yivi Styling, 'Action' buttons should be aligned to the right, back buttons to the left' */
+    justify-content: flex-end;
 }
 
 footer a,
