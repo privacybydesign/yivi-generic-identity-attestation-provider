@@ -33,6 +33,9 @@ function Issuance() {
             debugging: true,            // Enable to get helpful output in the browser console
             element: '#yivi-web-form', // Which DOM element to render to
 
+            // https://github.com/privacybydesign/yivi-frontend-packages/tree/master/plugins/yivi-web#language
+            language: i18n.language == 'en' ? 'en' : 'nl', // Yivi supports either 'en' or 'nl' and defaults to 'nl'
+
             // Back-end options
             session: {
                 // Point this to your controller:
