@@ -4,6 +4,7 @@
 
 th, td {
     text-align: left;
+    padding: 0 48px 4px 0;
 }
 
 /* CSS from IBAN issuer: https://github.com/privacybydesign/yivi-iban-issuer/tree/main/react-cra */
