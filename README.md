@@ -98,39 +98,16 @@ You'll need to be able to run the following:
 * **.NET 8**: for backend development.
 * **npm**: for frontend development.
 
-## Frontend
+## Frontend & Backend
 
-Navigate to the frontend directory:
-
-```
-cd giap.client
-```
-
-Install dependencies:
-
-```
-npm install
-```
-
-Run the frontend dev server:
-
-```
-npm run dev
-```
-
-## Backend
-
-Navigate to the backend directory:
-
-```
-cd GIAP.Server
-```
-
-Run the backend server (`dotnet watch` will automatically get any NuGet dependencies):
+Run the backend server (this should install any missing dependencies):
 
 ```
 dotnet watch
 ```
+
+`Microsoft.AspNetCore.SpaProxy` will automatically start the frontend development server when you run the backend
+server with hot reload enabled for both the frontend and backend.
 
 # Tests
 
