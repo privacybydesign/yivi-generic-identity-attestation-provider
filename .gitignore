@@ -1,5 +1,6 @@
 # Project
 GIAP.Server/Configuration/identity-providers.json
+.env
 
 # Dev
 .idea

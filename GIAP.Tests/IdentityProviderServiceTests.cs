@@ -48,7 +48,7 @@ public class IdentityProviderServiceTests
         fileSystem.ReadAllText(expectedPath).Returns("[]");
 
         var service = new IdentityProviderService(fileSystem);
-        Should.Throw<InvalidOperationException>(() => service.Initialize()).Message
+        Should.Throw<InvalidDataException>(() => service.Initialize()).Message
             .ShouldBe("No identity providers found");
     }
 
@@ -70,7 +70,7 @@ public class IdentityProviderServiceTests
 
         fileSystem.Exists(expectedPath).Returns(true);
 
-        // JSON doesn't include the required name key from the IdentityProvider model
+        // JSON doesn't include all the keys from the IdentityProvider model
         const string json = """
                             [
                                 {
@@ -144,14 +144,40 @@ public class IdentityProviderServiceTests
 
         const string json = """
                             [
-                                {
-                                  "name": "Example Identity Provider 1",
-                                  "slug": "example-1"
-                                },
-                                {
-                                  "name": "Example Identity Provider 2",
-                                  "slug": "example-2"
+                              {
+                                "name": "Example Identity Provider 1",
+                                "slug": "example-1",
+                                "openIdWellKnownUrl": "https://example.local/.well-known/openid-configuration",
+                                "clientId": "123-456-789",
+                                "clientSecret": "ABC-123-XYZ",
+                                "callbackPath": "/api/callback-signin-example-1",
+                                "apiUrls": [
+                                  "https://api.example.local/me?fields=id,given_name,family_name,companyName"
+                                ],
+                                "schemePath": "pbdf/Issues/example1/description.xml",
+                                "issuanceValidityInMonths": 6,
+                                "attributeMapping": {
+                                  "id": "id",
+                                  "given_name": "givenName",
+                                  "family_name": "surname",
+                                  "companyName": "companyName"
                                 }
+                              },
+                              {
+                                "name": "Example Identity Provider 2",
+                                "slug": "example-2",
+                                "openIdWellKnownUrl": "https://example.local/.well-known/openid-configuration",
+                                "clientId": "987-654-321",
+                                "clientSecret": "ZYX-321-CBA",
+                                "callbackPath": "/api/callback-signin-example-2",
+                                "schemePath": "pbdf/Issues/example2/description.xml",
+                                "issuanceValidityInMonths": 6,
+                                "attributeMapping": {
+                                  "http://example.local/claims/id": "id",
+                                  "given_name": "givenName",
+                                  "family_name": "surname"
+                                }
+                              }
                             ]
                             """;
 
@@ -161,5 +187,64 @@ public class IdentityProviderServiceTests
         Should.NotThrow(() => service.Initialize());
         service.GetBySlug("example-1")?.Name.ShouldBe("Example Identity Provider 1");
         service.GetBySlug("example-2")?.Name.ShouldBe("Example Identity Provider 2");
+    }
+
+    /// <summary>
+    /// Given an invalid identity providers file with a duplicate slug
+    /// When the service is initialized,
+    /// Then an exception is thrown with the duplicate slug name
+    /// </summary>
+    [Fact]
+    public void Initialize_WithDuplicateSlug_ThrowsException()
+    {
+        var fileSystem = Substitute.For<IFileSystem>();
+        var expectedPath = Path.Combine(
+            AppContext.BaseDirectory,
+            "Configuration",
+            "identity-providers.json"
+        );
+
+        fileSystem.Exists(expectedPath).Returns(true);
+
+        // JSON with a duplicate slug
+        const string json = """
+                            [
+                              {
+                                "name": "Example Identity Provider 1",
+                                "slug": "example-1",
+                                "openIdWellKnownUrl": "https://example.local/.well-known/openid-configuration",
+                                "clientId": "123-456-789",
+                                "clientSecret": "ABC-123-XYZ",
+                                "callbackPath": "/api/callback-signin-example-1",
+                                "schemePath": "pbdf/Issues/example1/description.xml",
+                                "issuanceValidityInMonths": 6,
+                                "attributeMapping": {
+                                  "id": "id",
+                                  "given_name": "givenName"
+                                }
+                              },
+                              {
+                                "name": "Example Identity Provider 1",
+                                "slug": "example-1",
+                                "openIdWellKnownUrl": "https://example.local/.well-known/openid-configuration",
+                                "clientId": "123-456-789",
+                                "clientSecret": "ABC-123-XYZ",
+                                "callbackPath": "/api/callback-signin-example-1",
+                                "schemePath": "pbdf/Issues/example1/description.xml",
+                                "issuanceValidityInMonths": 6,
+                                "attributeMapping": {
+                                  "id": "id",
+                                  "given_name": "givenName"
+                                }
+                              }
+                            ]
+                            """;
+
+        fileSystem.ReadAllText(expectedPath).Returns(json);
+
+        var service = new IdentityProviderService(fileSystem);
+
+        Should.Throw<InvalidDataException>(() => service.Initialize()).Message
+            .ShouldBe("Duplicate slug found in identity-providers.json: example-1");
     }
 }

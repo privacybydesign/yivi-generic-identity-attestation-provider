@@ -1,18 +1,16 @@
-import {useEffect, useState} from 'react';
-import {useTranslation} from 'react-i18next';
-import {useParams} from "react-router"
-import './App.css';
-import './i18n';
+import {useEffect, useState} from "react";
+import {useTranslation} from "react-i18next";
+import {useParams} from "react-router";
 
 interface IdentityProvider {
     name: string;
     slug: string;
 }
 
-function App() {
+function Login() {
     const [identityProvider, setIdentityProvider] = useState<IdentityProvider>();
     const [error, setError] = useState<boolean>(false);
-    const {t} = useTranslation();
+    const {t, i18n} = useTranslation();
     let {slug} = useParams();
 
     useEffect(() => {
@@ -37,12 +35,17 @@ function App() {
                     <h1>{identityProvider.name}</h1>
                 </header>
                 <main id="main-content">
-                    <p>{t("info")}</p>
+                    <p>{t("loginInfo")}</p>
                 </main>
                 <footer>
                     <div className="actions">
-                        <div></div>
-                        <button id="submit-button" type="submit">{t("login")}</button>
+                        <button id="submit-button"
+                                onClick={
+                                    () => location.href = `/api/identity-provider/${slug}/ui-login/${i18n.language}`
+                                }
+                                type="button">
+                            {t("loginButton")}
+                        </button>
                     </div>
                 </footer>
             </form>
@@ -66,4 +69,4 @@ function App() {
     }
 }
 
-export default App;
+export default Login;
