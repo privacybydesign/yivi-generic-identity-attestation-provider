@@ -39,10 +39,10 @@ public class IdentityProviderService(IFileSystem fileSystem) : IIdentityProvider
             foreach (var identityProvider in _identityProviders)
             {
                 // If a slug is already added to the dictionary, it means a duplicate exists in the idp config file
-                if (slugs.ContainsKey(identityProvider.Slug))
+                if (slugs.ContainsKey(identityProvider.Slug.ToLower()))
                 {
                     throw new InvalidDataException(
-                        $"Duplicate slug found in identity-providers.json: {identityProvider.Slug}");
+                        $"Duplicate slug found in identity-providers.json: {identityProvider.Slug}. Slugs are counted as duplicate regardless of case sensitivity, a configured identity-providers.json with the slugs 'example' and 'Example' will cause an exception to be thrown.");
                 }
 
                 slugs[identityProvider.Slug] = true;
