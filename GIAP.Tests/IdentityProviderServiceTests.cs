@@ -245,6 +245,71 @@ public class IdentityProviderServiceTests
         var service = new IdentityProviderService(fileSystem);
 
         Should.Throw<InvalidDataException>(() => service.Initialize()).Message
-            .ShouldBe("Duplicate slug found in identity-providers.json: example-1");
+            .ShouldBe(
+                "Duplicate slug found in identity-providers.json: example-1. Slugs are counted as duplicate regardless of case sensitivity, a configured identity-providers.json with the slugs 'example' and 'Example' will cause an exception to be thrown.");
+    }
+
+    /// <summary>
+    /// Given an invalid identity providers file with a duplicate slug
+    /// When the service is initialized,
+    /// Then an exception is thrown with the duplicate slug name
+    /// </summary>
+    /// <remarks>
+    /// This one is different from `Initialize_WithDuplicateSlug_ThrowsException` because it checks for case insensitivity.
+    /// It should also throw an exception when the slugs are the same but differ in case, for example, "example-1" and "EXAMPLE-1".
+    /// </remarks>
+    [Fact]
+    public void Initialize_WithDuplicateSlug_ThrowsException_CaseInsensitiveVersion()
+    {
+        var fileSystem = Substitute.For<IFileSystem>();
+        var expectedPath = Path.Combine(
+            AppContext.BaseDirectory,
+            "Configuration",
+            "identity-providers.json"
+        );
+
+        fileSystem.Exists(expectedPath).Returns(true);
+
+        // JSON with a duplicate slug
+        const string json = """
+                            [
+                              {
+                                "name": "Example Identity Provider 1",
+                                "slug": "example-1",
+                                "openIdWellKnownUrl": "https://example.local/.well-known/openid-configuration",
+                                "clientId": "123-456-789",
+                                "clientSecret": "ABC-123-XYZ",
+                                "callbackPath": "/api/callback-signin-example-1",
+                                "schemePath": "pbdf/Issues/example1/description.xml",
+                                "issuanceValidityInMonths": 6,
+                                "attributeMapping": {
+                                  "id": "id",
+                                  "given_name": "givenName"
+                                }
+                              },
+                              {
+                                "name": "Example Identity Provider 1",
+                                "slug": "EXAMPLE-1",
+                                "openIdWellKnownUrl": "https://example.local/.well-known/openid-configuration",
+                                "clientId": "123-456-789",
+                                "clientSecret": "ABC-123-XYZ",
+                                "callbackPath": "/api/callback-signin-example-1",
+                                "schemePath": "pbdf/Issues/example1/description.xml",
+                                "issuanceValidityInMonths": 6,
+                                "attributeMapping": {
+                                  "id": "id",
+                                  "given_name": "givenName"
+                                }
+                              }
+                            ]
+                            """;
+
+        fileSystem.ReadAllText(expectedPath).Returns(json);
+
+        var service = new IdentityProviderService(fileSystem);
+
+        Should.Throw<InvalidDataException>(() => service.Initialize()).Message
+            .ShouldBe(
+                "Duplicate slug found in identity-providers.json: EXAMPLE-1. Slugs are counted as duplicate regardless of case sensitivity, a configured identity-providers.json with the slugs 'example' and 'Example' will cause an exception to be thrown.");
     }
 }
