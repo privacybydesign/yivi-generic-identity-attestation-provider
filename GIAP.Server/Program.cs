@@ -7,7 +7,11 @@ using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Env.Load();
+if (builder.Environment.IsDevelopment())
+{
+    // Only load environment variables from .env if environment IsDevelopment (see: https://github.com/tonerdo/dotnet-env?tab=readme-ov-file#a-note-about-production-and-the-purpose-of-this-library)
+    Env.Load();
+}
 
 // Add services to the container.
 var envVariables = new EnvVariables(); // Check for required environment variables at startup
@@ -15,8 +19,6 @@ builder.Services.AddSingleton<IEnvVariables>(envVariables);
 
 builder.Services.AddTransient<IAttributeMapperService, AttributeMapperService>();
 builder.Services.AddTransient<ICredentialAttributeService, CredentialAttributeService>();
-
-builder.Services.AddSingleton<IDotNetEnvWrapper, DotNetDotNetEnvWrapperWrapper>();
 builder.Services.AddSingleton<IFileSystem, FileSystem>();
 builder.Services.AddSingleton<IIdentityProviderService, IdentityProviderService>(serviceProvider =>
 {
