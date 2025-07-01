@@ -22,7 +22,7 @@ public class IdentityProviderController(
     ISchemeCredentialClient schemeCredentialClient,
     ICredentialAttributeService credentialAttributeService,
     IIrmaServerClient irmaServerClient,
-    IDotNetEnvWrapper dotNetEnvWrapper,
+    IEnvVariables envVariables,
     ILogger<IdentityProviderController> logger
 ) : ControllerBase
 {
@@ -78,8 +78,8 @@ public class IdentityProviderController(
             var idpAuthData = (HttpContext.Items["authIdpData"] as IdentityProviderAuthData)!; // trust middleware
 
             // Get scheme attributes
-            var schemeBaseUrl = dotNetEnvWrapper.GetSchemeBaseUrl();
-            var schemeName = dotNetEnvWrapper.GetSchemeName();
+            var schemeBaseUrl = envVariables.GetSchemeBaseUrl();
+            var schemeName = envVariables.GetSchemeName();
             var schemeUrl = $"{schemeBaseUrl}/{schemeName}/{idpAuthData.IdentityProvider.SchemePath}";
             var schemeAttributes = await schemeCredentialClient.GetAttributes(schemeUrl, language);
 
@@ -128,9 +128,9 @@ public class IdentityProviderController(
         try
         {
             var idpAuthData = (HttpContext.Items["authIdpData"] as IdentityProviderAuthData)!; // trust middleware
-            var irmaServerBaseUrl = dotNetEnvWrapper.GetIrmaServerBaseUrl();
-            var irmaServerApiToken = dotNetEnvWrapper.GetIrmaServerApiToken();
-            var schemeName = dotNetEnvWrapper.GetSchemeName();
+            var irmaServerBaseUrl = envVariables.GetIrmaServerBaseUrl();
+            var irmaServerApiToken = envVariables.GetIrmaServerApiToken();
+            var schemeName = envVariables.GetSchemeName();
 
             var apiData = new Dictionary<string, string>();
             if (idpAuthData.IdentityProvider.ApiUrls != null)

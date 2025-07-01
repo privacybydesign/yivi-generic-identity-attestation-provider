@@ -1,13 +1,13 @@
 ﻿namespace GIAP.Server.Services;
 
 /// <summary>
-/// Wrapper class for DotNetEnv to get env variables.
+/// Wrapper class to get env variables.
 /// </summary>
 /// <remarks>
 /// Testing becomes easier with this class.
 /// It's also a safer way to access environment variables.
 /// </remarks>
-public interface IDotNetEnvWrapper
+public interface IEnvVariables
 {
     /// <summary>
     /// Scheme base URL used to build the full URL for the scheme.
