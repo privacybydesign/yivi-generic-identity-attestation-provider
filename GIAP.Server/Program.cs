@@ -10,6 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 Env.Load();
 
 // Add services to the container.
+var envVariables = new EnvVariables(); // Check for required environment variables at startup
+builder.Services.AddSingleton<IEnvVariables>(envVariables);
+
 builder.Services.AddTransient<IAttributeMapperService, AttributeMapperService>();
 builder.Services.AddTransient<ICredentialAttributeService, CredentialAttributeService>();
 
