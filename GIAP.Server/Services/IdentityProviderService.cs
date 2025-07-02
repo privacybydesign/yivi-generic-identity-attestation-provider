@@ -38,11 +38,18 @@ public class IdentityProviderService(IFileSystem fileSystem) : IIdentityProvider
             var slugs = new Dictionary<string, bool>();
             foreach (var identityProvider in _identityProviders)
             {
-                // If a slug is already added to the dictionary, it means a duplicate exists in the idp config file
-                if (slugs.ContainsKey(identityProvider.Slug.ToLower()))
+                // If a slug is not lowercase, throw an exception
+                if (identityProvider.Slug != identityProvider.Slug.ToLower())
                 {
                     throw new InvalidDataException(
-                        $"Duplicate slug found in identity-providers.json: {identityProvider.Slug}. Slugs are counted as duplicate regardless of case sensitivity, a configured identity-providers.json with the slugs 'example' and 'Example' will cause an exception to be thrown.");
+                        $"Found: {identityProvider.Slug}. Slugs must be lowercase, a configured identity-providers.json with the slug 'Example' or 'EXAMPLE' will cause an exception to be thrown.");
+                }
+
+                // If a slug is already added to the dictionary, it means a duplicate exists in the idp config file
+                if (slugs.ContainsKey(identityProvider.Slug))
+                {
+                    throw new InvalidDataException(
+                        $"Duplicate slug found in identity-providers.json: {identityProvider.Slug}.");
                 }
 
                 slugs[identityProvider.Slug] = true;
@@ -55,7 +62,8 @@ public class IdentityProviderService(IFileSystem fileSystem) : IIdentityProvider
     }
 
     /// <inheritdoc/>
-    public IdentityProvider? GetBySlug(string slug) => _identityProviders.FirstOrDefault(idp => idp.Slug == slug);
+    public IdentityProvider? GetBySlug(string slug) =>
+        _identityProviders.FirstOrDefault(idp => idp.Slug == slug.ToLower());
 
     /// <inheritdoc/>
     public IReadOnlyList<IdentityProvider> GetAll() => _identityProviders;
