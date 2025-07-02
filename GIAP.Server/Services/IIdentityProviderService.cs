@@ -17,8 +17,6 @@ public interface IIdentityProviderService
 
     /// <summary>
     /// Get an identity provider by its web url slug.
-    /// This method is used to find an IdentityProvider from a user input slug.
-    /// The user input slug is always converted to lowercase.
     /// </summary>
     /// <param name="slug">A web url slug, for example, "idp-slug".</param>
     /// <returns>The identity provider, if none found, it returns null.</returns>
