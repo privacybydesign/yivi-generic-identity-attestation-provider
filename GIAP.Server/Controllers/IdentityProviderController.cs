@@ -108,7 +108,7 @@ public class IdentityProviderController(
         }
         catch (HttpRequestException)
         {
-            return StatusCode(502, "Bad Gateway: Unable to get attributes from external services.");
+            return StatusCode(500, "Unable to get attributes from external services.");
         }
         catch (Exception e)
         {
@@ -164,8 +164,8 @@ public class IdentityProviderController(
         }
         catch (HttpRequestException)
         {
-            return StatusCode(502,
-                "Bad Gateway: Unable to get data for issuance or failed to issue the credential to the IRMA server.");
+            return StatusCode(500,
+                "Unable to get data for issuance or failed to issue the credential to the IRMA server.");
         }
         catch (Exception e)
         {
