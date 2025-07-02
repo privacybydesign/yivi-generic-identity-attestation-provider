@@ -61,8 +61,10 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 var app = builder.Build();
 
 app.UseForwardedHeaders();
-app.UseAuthentication();
 
+app.UseHealthChecks("/health");
+
+app.UseAuthentication();
 app.UseMiddleware<IdentityProviderAuthMiddleware>();
 
 app.UseDefaultFiles();
@@ -76,7 +78,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapControllers();
-app.MapHealthChecks("/health");
 app.MapFallbackToFile("/index.html");
 
 app.Run();

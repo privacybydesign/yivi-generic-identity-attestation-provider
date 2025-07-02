@@ -20,13 +20,6 @@ public class IdentityProviderAuthMiddleware(RequestDelegate next, IIdentityProvi
 {
     public async Task InvokeAsync(HttpContext context)
     {
-        // Check: Allow health check to pass through without authentication
-        if (context.Request.Path.Equals("/health"))
-        {
-            await next(context);
-            return;
-        }
-
         // Check: Allow non-backend requests to pass through without authentication
         if (!context.Request.Path.StartsWithSegments("/api"))
         {
