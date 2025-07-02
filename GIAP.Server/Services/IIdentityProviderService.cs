@@ -20,6 +20,11 @@ public interface IIdentityProviderService
     /// </summary>
     /// <param name="slug">A web url slug, for example, "idp-slug".</param>
     /// <returns>The identity provider, if none found, it returns null.</returns>
+    /// <remarks>
+    /// It's necessary to convert user input slugs to lowercase.
+    /// For example, it allows a user to be able to navigate to a URL like "/Slug"
+    /// and still get the expected identity provider result.
+    /// </remarks>
     IdentityProvider? GetBySlug(string slug);
 
     /// <summary>

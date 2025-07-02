@@ -245,6 +245,66 @@ public class IdentityProviderServiceTests
         var service = new IdentityProviderService(fileSystem);
 
         Should.Throw<InvalidDataException>(() => service.Initialize()).Message
-            .ShouldBe("Duplicate slug found in identity-providers.json: example-1");
+            .ShouldBe("Duplicate slug found in identity-providers.json: example-1.");
+    }
+
+    /// <summary>
+    /// Given an invalid identity providers file with a lower case slug
+    /// When the service is initialized,
+    /// Then an exception is thrown with the slug
+    /// </summary>
+    [Fact]
+    public void Initialize_WithSlugNotLowerCase_ThrowsException()
+    {
+        var fileSystem = Substitute.For<IFileSystem>();
+        var expectedPath = Path.Combine(
+            AppContext.BaseDirectory,
+            "Configuration",
+            "identity-providers.json"
+        );
+
+        fileSystem.Exists(expectedPath).Returns(true);
+
+        // JSON with a duplicate slug
+        const string json = """
+                            [
+                              {
+                                "name": "Example Identity Provider 1",
+                                "slug": "example-1",
+                                "openIdWellKnownUrl": "https://example.local/.well-known/openid-configuration",
+                                "clientId": "123-456-789",
+                                "clientSecret": "ABC-123-XYZ",
+                                "callbackPath": "/api/callback-signin-example-1",
+                                "schemePath": "pbdf/Issues/example1/description.xml",
+                                "issuanceValidityInMonths": 6,
+                                "attributeMapping": {
+                                  "id": "id",
+                                  "given_name": "givenName"
+                                }
+                              },
+                              {
+                                "name": "Example Identity Provider 1",
+                                "slug": "EXAMPLE-1",
+                                "openIdWellKnownUrl": "https://example.local/.well-known/openid-configuration",
+                                "clientId": "123-456-789",
+                                "clientSecret": "ABC-123-XYZ",
+                                "callbackPath": "/api/callback-signin-example-1",
+                                "schemePath": "pbdf/Issues/example1/description.xml",
+                                "issuanceValidityInMonths": 6,
+                                "attributeMapping": {
+                                  "id": "id",
+                                  "given_name": "givenName"
+                                }
+                              }
+                            ]
+                            """;
+
+        fileSystem.ReadAllText(expectedPath).Returns(json);
+
+        var service = new IdentityProviderService(fileSystem);
+
+        Should.Throw<InvalidDataException>(() => service.Initialize()).Message
+            .ShouldBe(
+                "Found: EXAMPLE-1. Slugs must be lowercase, a configured identity-providers.json with the slug 'Example' or 'EXAMPLE' will cause an exception to be thrown.");
     }
 }
