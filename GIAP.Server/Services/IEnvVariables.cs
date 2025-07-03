@@ -10,6 +10,15 @@
 public interface IEnvVariables
 {
     /// <summary>
+    /// Check if required environment variables exist.
+    /// </summary>
+    /// <exception cref="InvalidDataException">Throw an exception if any required env variables are missing.</exception>
+    /// <remarks>
+    /// This should be called at the start of program.cs to ensure that all required environment variables are set.
+    /// </remarks>
+    void Verify();
+    
+    /// <summary>
     /// Scheme base URL used to build the full URL for the scheme.
     /// A scheme base URL looks like: "https://schemes.staging.yivi.app".
     /// </summary>
