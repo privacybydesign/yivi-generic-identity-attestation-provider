@@ -17,6 +17,12 @@ function Login() {
         populateIdentityProviderData();
     }, []);
 
+    useEffect(() => {
+        if (identityProvider?.name) {
+            document.title = identityProvider.name;
+        }
+    }, [identityProvider]);
+
     if (error) {
         return <div id="container">
             <main id="main-content">

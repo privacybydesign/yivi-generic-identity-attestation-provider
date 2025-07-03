@@ -24,6 +24,12 @@ function Issuance() {
     }, []);
 
     useEffect(() => {
+        if (identityProvider?.name) {
+            document.title = identityProvider.name;
+        }
+    }, [identityProvider]);
+
+    useEffect(() => {
         if (!identityProvider) return; // Don't show the QR code until the user can see the identity provider data
 
         if (yiviInitialized) return; // Don't initialize it multiple times
@@ -49,7 +55,9 @@ function Issuance() {
             }
         });
         yiviWeb.start()
-            .then(() => navigate(`/${i18n.language}/${slug}/success`))
+            .then(() => navigate(`/${i18n.language}/${slug}/success`), {
+                state: {identityProviderName: identityProvider.name}
+            })
             .catch((error: any) => console.error("Couldn't do what you asked 😢", error));
     }, [identityProvider, yiviInitialized]);
 
