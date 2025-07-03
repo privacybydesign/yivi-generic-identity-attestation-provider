@@ -5,6 +5,7 @@ namespace GIAP.Server.Services;
 /// <summary>
 /// The IrmaServerClient is used to issue credentials to the IRMA server.
 /// </summary>
+/// <seealso href="https://docs.yivi.app/irma-server"/>
 public interface IIrmaServerClient
 {
     /// <summary>
