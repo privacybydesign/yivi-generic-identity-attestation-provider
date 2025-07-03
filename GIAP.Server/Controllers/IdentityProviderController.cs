@@ -162,7 +162,9 @@ public class IdentityProviderController(
                 credential
             );
 
-            // As described in the IRMA protocol, remove the token from the IRMA Server response to the frontend
+            // As described in the IRMA protocol, remove the token from the IRMA Server response to the frontend, see:
+            // https://docs.yivi.app/irma-protocol#sequence-diagram
+            // https://github.com/privacybydesign/yivi-frontend-packages?tab=readme-ov-file#server-side
             var irmaServerResponseWithoutToken = new
             {
                 irmaServerResponse.FrontendRequest,

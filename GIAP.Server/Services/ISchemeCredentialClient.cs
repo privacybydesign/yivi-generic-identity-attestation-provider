@@ -3,6 +3,7 @@
 /// <summary>
 /// The SchemeCredentialClient is used to get credential from the scheme.
 /// </summary>
+/// <seealso href="https://docs.yivi.app/schemes"/>
 public interface ISchemeCredentialClient
 {
     /// <summary>

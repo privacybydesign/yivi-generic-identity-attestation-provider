@@ -5,6 +5,7 @@ namespace GIAP.Server.Models;
 /// <summary>
 /// The issuance request to the IRMA server when issuing a credential.
 /// </summary>
+/// <seealso href="https://docs.yivi.app/session-requests#issuance-requests"/>
 public class IssuanceRequest
 {
     [JsonPropertyName("@context")] public required string Context { get; init; }
@@ -12,7 +13,7 @@ public class IssuanceRequest
 }
 
 /// <summary>
-/// Part of the IssuanceRequest.
+/// Part of the <see cref="IssuanceRequest"/>.
 /// </summary>
 public class Credential
 {
