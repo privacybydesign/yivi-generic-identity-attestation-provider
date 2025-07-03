@@ -14,11 +14,16 @@ if (builder.Environment.IsDevelopment())
 }
 
 // Add services to the container.
-var envVariables = new EnvVariables(); // Check for required environment variables at startup
-builder.Services.AddSingleton<IEnvVariables>(envVariables);
+builder.Services.AddSingleton<IEnvironment, EnvironmentWrapper>();
+builder.Services.AddSingleton<IEnvVariables, EnvVariables>(serviceProvider =>
+{
+    var environment = serviceProvider.GetRequiredService<IEnvironment>();
+    var envVariables = new EnvVariables(environment);
+    // Check for required environment variables at startup
+    envVariables.Verify();
+    return envVariables;
+});
 
-builder.Services.AddTransient<IAttributeMapperService, AttributeMapperService>();
-builder.Services.AddTransient<ICredentialAttributeService, CredentialAttributeService>();
 builder.Services.AddSingleton<IFileSystem, FileSystem>();
 builder.Services.AddSingleton<IIdentityProviderService, IdentityProviderService>(serviceProvider =>
 {
@@ -28,6 +33,9 @@ builder.Services.AddSingleton<IIdentityProviderService, IdentityProviderService>
     identityProviderService.Initialize();
     return identityProviderService;
 });
+
+builder.Services.AddTransient<IAttributeMapperService, AttributeMapperService>();
+builder.Services.AddTransient<ICredentialAttributeService, CredentialAttributeService>();
 
 builder.Services.AddHttpClient<IApiClient, ApiClient>();
 builder.Services.AddHttpClient<ISchemeCredentialClient, SchemeCredentialClient>();

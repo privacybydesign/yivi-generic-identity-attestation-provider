@@ -1,7 +1,7 @@
 ﻿namespace GIAP.Server.Services;
 
 /// <inheritdoc/>
-public class EnvVariables : IEnvVariables
+public class EnvVariables(IEnvironment environment) : IEnvVariables
 {
     private const string SchemeBaseUrlKey = "SCHEME_BASE_URL";
     private const string SchemeNameKey = "SCHEME_NAME";
@@ -16,19 +16,13 @@ public class EnvVariables : IEnvVariables
         IrmaServerApiTokenKey
     ];
 
-    /// <summary>
-    /// Check if required environment variables exist.
-    /// </summary>
-    /// <exception cref="InvalidDataException">Throw an exception if any required env variables are missing.</exception>
-    /// <remarks>
-    /// This should be called at the start of program.cs to ensure that all required environment variables are set.
-    /// </remarks>
-    public EnvVariables()
+    /// <inheritdoc/>
+    public void Verify()
     {
         var missingVariables = new List<string>();
         foreach (var key in RequiredEnvironmentVariables)
         {
-            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(key)))
+            if (string.IsNullOrEmpty(environment.Get(key)))
             {
                 missingVariables.Add(key);
             }
@@ -72,7 +66,7 @@ public class EnvVariables : IEnvVariables
             throw new ArgumentException("Environment variable key cannot be null or empty.");
         }
 
-        var envVarValue = Environment.GetEnvironmentVariable(key);
+        var envVarValue = environment.Get(key);
         if (string.IsNullOrEmpty(envVarValue))
         {
             throw new InvalidDataException($"Environment variable '{key}' is not set or is empty.");
