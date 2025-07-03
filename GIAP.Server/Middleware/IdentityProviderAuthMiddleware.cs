@@ -53,7 +53,8 @@ public class IdentityProviderAuthMiddleware(RequestDelegate next, IIdentityProvi
 
         // Check: Require authentication
         var authResult = await context.AuthenticateAsync(identityProvider.Slug);
-        if (!authResult.Succeeded || authResult.Principal == null)
+        var accessToken = authResult.Properties?.GetTokenValue(OpenIdConnectParameterNames.AccessToken);
+        if (!authResult.Succeeded || authResult.Principal == null || string.IsNullOrEmpty(accessToken))
         {
             // If authentication failed, challenge the user to log in
             await context.ChallengeAsync(identityProvider.Slug);
@@ -64,7 +65,7 @@ public class IdentityProviderAuthMiddleware(RequestDelegate next, IIdentityProvi
         var authIdpData = new IdentityProviderAuthData
         {
             IdentityProvider = identityProvider,
-            AccessToken = GetAccessToken(authResult),
+            AccessToken = accessToken,
             JwtClaims = GetJwtClaims(authResult.Principal),
         };
         context.Items["authIdpData"] = authIdpData;
@@ -75,10 +76,5 @@ public class IdentityProviderAuthMiddleware(RequestDelegate next, IIdentityProvi
     private Dictionary<string, string> GetJwtClaims(ClaimsPrincipal user)
     {
         return user.Claims.ToDictionary(claim => claim.Type, claim => claim.Value);
-    }
-
-    private string GetAccessToken(AuthenticateResult userResult)
-    {
-        return userResult.Properties!.GetTokenValue(OpenIdConnectParameterNames.AccessToken)!;
     }
 }

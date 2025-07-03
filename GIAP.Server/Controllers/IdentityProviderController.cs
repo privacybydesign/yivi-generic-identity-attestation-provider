@@ -75,7 +75,11 @@ public class IdentityProviderController(
     {
         try
         {
-            var idpAuthData = (HttpContext.Items["authIdpData"] as IdentityProviderAuthData)!; // trust middleware
+            if (HttpContext.Items["authIdpData"] is not IdentityProviderAuthData idpAuthData)
+            {
+                logger.LogError("GetAttributes ({Slug}): No IdentityProviderAuthData.", slug);
+                return Unauthorized("Unable to get auth data.");
+            }
 
             // Get scheme attributes
             var schemeBaseUrl = envVariables.GetSchemeBaseUrl();
@@ -127,7 +131,12 @@ public class IdentityProviderController(
     {
         try
         {
-            var idpAuthData = (HttpContext.Items["authIdpData"] as IdentityProviderAuthData)!; // trust middleware
+            if (HttpContext.Items["authIdpData"] is not IdentityProviderAuthData idpAuthData)
+            {
+                logger.LogError("IrmaSessionStart ({Slug}): No IdentityProviderAuthData.", slug);
+                return Unauthorized("Unable to get auth data.");
+            }
+
             var irmaServerBaseUrl = envVariables.GetIrmaServerBaseUrl();
             var irmaServerApiToken = envVariables.GetIrmaServerApiToken();
             var schemeName = envVariables.GetSchemeName();
